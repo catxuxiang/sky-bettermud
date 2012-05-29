@@ -10,3 +10,4 @@ class B(A):
         print(self.a)
 b = B()
 b.Test()  
+#####
