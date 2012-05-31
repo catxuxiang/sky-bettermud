@@ -3,10 +3,13 @@ Created on 2012-5-30
 
 @author: Sky
 '''
+from Db.CharacterDatabase import CharacterDB
+from Entities.Action import Action
+
 class charactertemplate:
     def __init__(self, p_data):
         if type(p_data) == str:
-            self.m_character = CharacterDB.gettemplate(p_data)
+            self.m_character = CharacterDB.GetTemplate(p_data)
             self.m_character.AddRef()
         else:
             self.m_character.DelRef()
@@ -43,7 +46,7 @@ class charactertemplate:
 class character:
     def __init__(self, p_data):
         if type(p_data) == str:
-            self.m_character = CharacterDB.get(p_data))
+            self.m_character = CharacterDB.Get(p_data)
             self.m_character.AddRef()
         else:
             self.m_character.DelRef()
@@ -150,4 +153,58 @@ class character:
         
     def ClearLogicHooks(self, p_logic):
         self.m_character.ClearLogicHooks(p_logic)
+        
+    def GetAttribute(self, p_name):
+        return self.m_character.GetAttribute(p_name)
+    
+    def SetAttribute(self, p_name, p_val):
+        self.m_character.SetAttribute(p_name, p_val)
+        
+    def HasAttribute(self, p_name):
+        return self.m_character.HasAttribute(p_name)
+    
+    def AddAttribute(self, p_name, p_initialval):
+        self.m_character.AddAttribute(p_name, p_initialval)
+        
+    def DelAttribute(self, p_name):
+        self.m_character.DelAttribute(p_name)
+        
+    def AddCommand(self, p_command):
+        return self.m_character.AddCommand(p_command)
+    
+    def DelCommand(self, p_command):
+        return self.m_character.DelCommand(p_command)
+    
+    def HasCommand(self, p_command):
+        return self.m_character.HasCommand(p_command)
+    
+    def SeekCommand(self, p_name):
+        return self.m_character.FindCommand(p_name)
+    
+    def GetQuiet(self):
+        return self.m_character.GetQuiet()
+    
+    def IsPlayer(self):
+        return self.m_character.IsPlayer()
+    
+    def Verbose(self):
+        return self.m_character.Verbose()
+    
+    def GetAccount(self):
+        return self.m_character.GetAccount()
+    
+    def SetQuiet(self, p_quiet):
+        self.m_character.SetQuiet(p_quiet)
+        
+    def SetAccount(self, p_account):
+        self.m_character.SetAccount(p_account)
+        
+    def IsLoggedIn(self):
+        return self.m_character.IsLoggedIn()
+    
+    def SetLoggedIn(self, p_loggedin):
+        self.m_character.SetLoggedIn(p_loggedin)
+        
+    def LastCommand(self):
+        return self.m_character.LastCommand()
     
