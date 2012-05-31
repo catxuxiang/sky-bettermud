@@ -6,7 +6,7 @@ Created on 2012-5-30
 class charactertemplate:
     def __init__(self, p_data):
         if type(p_data) == str:
-            self.m_character = CharacterDB.gettemplate(p_data))
+            self.m_character = CharacterDB.gettemplate(p_data)
             self.m_character.AddRef()
         else:
             self.m_character.DelRef()
