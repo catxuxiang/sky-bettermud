@@ -12,68 +12,34 @@ class Database:
         raise Exception("Abstract Method!")
     
     
-    def LoadEntity(self, p_entity):
+    def LoadEntity(self, p_entity, prefix):
         self.Create(p_entity)
-        p_entity.Load(sr)
+        p_entity.Load(sr, prefix)
 
-    def SaveEntity(self, p_entity):
-        p_entity.Save(sr)
+    def SaveEntity(self, p_entity, prefix):
+        p_entity.Save(sr, prefix)
         
     def Purge(self):
         raise Exception("Abstract Method!")
 
-class VectorDatabase:
-    def __init__(self):
-        self.m_container = []
-        
-    def IsValid(self, p_id):
-        p_id = int(p_id)
-        return p_id <= len(self.m_container) and p_id != 0
-    
-    def Get(self, p_id):
-        p_id = int(p_id)
-        if p_id > len(self.m_container) or p_id == 0:
-            raise Exception("Out of bounds error in vector database")
-
-        if self.m_container[p_id - 1].GetId() == "0":
-            raise Exception("Invalid Item in vector database")
-
-        return self.m_container[p_id - 1]
-
-    def Create(self, p_item):
-        self.m_container.append(p_item)
-        
-    def FindName(self, p_name):
-        for i in self.m_container:
-            if i.GetName().lower() == p_name.lower().strip():
-                return i
-        return None
-    
-    def Purge(self):
-        self.m_container = []  
-    
 class MapDatabase:
     def __init__(self):
         self.m_container = {}
         
     def IsValid(self, p_id):
-        p_id = int(p_id)
-        return p_id > 0 and p_id <= len(self.m_container)
+        for i in self.m_container.keys():
+            if i == p_id:
+                return True
+        return False
     
     def Get(self, p_id):
-        if int(p_id) <= 0 or int(p_id) > len(self.m_container):
-            raise Exception("Out of bounds error in map database")
-        else:
-            return self.m_container[p_id]
+        return self.m_container[p_id]
         
     def Create(self, p_item):
         self.m_container[p_item.GetId()] = p_item
         
     def Erase(self, p_id):
-        if int(p_id) <= 0 or int(p_id) > len(self.m_container):
-            raise Exception("Out of bounds error in map database")
-        else:
-            del self.m_container[p_id]
+        del self.m_container[p_id]
             
     def FindOpenId(self):
         if len(self.m_container) == 0:
@@ -96,7 +62,7 @@ class MapDatabase:
 class TemplateInstanceDatabase:
     Sr = sr
     def __init__(self):
-        self.m_templates = VectorDatabase()
+        self.m_templates = MapDatabase()
         self.m_instances = MapDatabase()
         self.m_cleanup = []
                 
@@ -156,4 +122,36 @@ class TemplateInstanceDatabase:
             if i == p_id:
                 return False
         return self.m_instances.IsValid(p_id)
+
+'''    
+class VectorDatabase:
+    def __init__(self):
+        self.m_container = []
+        
+    def IsValid(self, p_id):
+        p_id = int(p_id)
+        return p_id <= len(self.m_container) and p_id != 0
+    
+    def Get(self, p_id):
+        p_id = int(p_id)
+        if p_id > len(self.m_container) or p_id == 0:
+            raise Exception("Out of bounds error in vector database")
+
+        if self.m_container[p_id - 1].GetId() == "0":
+            raise Exception("Invalid Item in vector database")
+
+        return self.m_container[p_id - 1]
+
+    def Create(self, p_item):
+        self.m_container.append(p_item)
+        
+    def FindName(self, p_name):
+        for i in self.m_container:
+            if i.GetName().lower() == p_name.lower().strip():
+                return i
+        return None
+    
+    def Purge(self):
+        self.m_container = [] 
+'''
 
