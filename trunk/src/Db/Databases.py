@@ -22,7 +22,7 @@ class Database:
     def Purge(self):
         raise Exception("Abstract Method!")
 
-class MapDatabase:
+class MapDatabase(Database):
     def __init__(self):
         self.m_container = {}
         
@@ -73,10 +73,10 @@ class TemplateInstanceDatabase:
         return self.m_instances.Get(p_id)
     
     def Size(self):
-        return len(self.m_instances)
+        return self.m_instances.Size()
     
     def SizeTemplates(self):
-        return len(self.m_templates)
+        return self.m_templates.Size()
     
     def GetTemplate(self, p_id):
         return self.m_templates.Get(p_id)
@@ -124,7 +124,7 @@ class TemplateInstanceDatabase:
         return self.m_instances.IsValid(p_id)
 
 '''    
-class VectorDatabase:
+class VectorDatabase(Database):
     def __init__(self):
         self.m_container = []
         

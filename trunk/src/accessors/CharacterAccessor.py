@@ -98,7 +98,7 @@ class character:
     def DelItem(self, p_id):
         self.m_character.DelItem(p_id)
         
-    def GetItems(self):
+    def Items(self):
         return self.m_character.m_items
 
     def SeekItem(self, p_name):
