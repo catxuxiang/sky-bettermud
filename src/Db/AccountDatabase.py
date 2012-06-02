@@ -24,13 +24,13 @@ class AccountDatabase(MapDatabase):
             id1 = sr.lindex("accounts", i)
             a = Account()
             a.SetId(id1)
-            self.LoadEntity(a)
+            self.LoadEntity(a, "accounts")
             
     def Save(self):
         sr.ltrim("accounts", 2, 1)
         for i in self.m_container.values():
             sr.rpush("accounts", i.GetId())
-            self.SaveEntity(i)  
+            self.SaveEntity(i, "accounts")  
             
     def AcceptibleName(self, p_name):
         inv = " \"'~!@#$%^&*+/\\[]{}<>()=.,?;:"

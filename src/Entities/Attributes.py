@@ -52,14 +52,14 @@ class Databank:
             del self.m_bank[p_name]
             
     def Save(self, sr, prefix):
-        key = prefix + "DATABANK"
+        key = prefix + ":DATABANK"
         for i in sr.hkeys(key):
             sr.hdel(key, i)
         for i in self.m_bank:
             sr.hset(key, i, self.m_bank[i])
             
     def Load(self, sr, prefix):
-        key = prefix + "DATABANK"
+        key = prefix + ":DATABANK"
         self.m_bank = {}
         for i in sr.hkeys(key):
             self.m_bank[i] = sr.hget(key, i)

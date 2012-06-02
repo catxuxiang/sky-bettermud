@@ -3,7 +3,12 @@ Created on 2012-5-30
 
 @author: Sky
 '''
+from Entities.Attributes import Databank
+
 class DataEntity:
+    def __init__(self):
+        self.m_attributes = Databank()
+        
     def GetAttribute(self, p_name):
         return self.m_attributes.Get(p_name)
     
