@@ -11,91 +11,40 @@ class LogicCollection:
         self.m_collection.Add(l.GetName(), l)
         
     def Add(self, p_name, p_id):
-        l = LogicDB.generate( p_name, p_id );
-    AddExisting( l );
-}
-
-void LogicCollection::Del( const std::string& p_name )
-{
-    Logic* l = m_collection.Get( p_name );
-    delete l;
-    m_collection.Del( p_name );
-}
-
-bool LogicCollection::Has( const std::string& p_name )
-{
-    return m_collection.Has( p_name );
-}
-
-int LogicCollection::Attribute( 
-    const std::string& p_module, 
-    const std::string& p_attr )
-{
-    return m_collection.Get( p_module )->Attribute( p_attr );
-}
-
-int LogicCollection::DoAction( const Action& p_action ) 
-{
-    for( iterator itr = m_collection.begin(); itr != m_collection.end(); ++itr )
-    {
-        int i = (itr->second)->DoAction( p_action );
-        if( i != 0 )
-            return i;
-    }
-    return 0;
-}
-
-
-void LogicCollection::Load( std::istream& p_stream, entityid p_id )
-{
-    std::string temp;
-    p_stream >> temp;       // chew up the "[LOGICS]"
-    p_stream >> temp;       // load in the first logic name
-
-    // loop while there are logic modules available
-    while( temp != "[/LOGICS]" )
-    {
-        Add( temp, p_id );
-        Logic* c = Get( temp );
-        c->Load( p_stream );
-        p_stream >> temp;       // try reading next logic name
-    }
-}
-
-void LogicCollection::Save( std::ostream& p_stream )
-{
-    p_stream << "[LOGICS]\n";
-    iterator itr = begin();
-    while( itr != end() )
-    {
-        // make sure you can save the logic module first
-        if( itr->second->CanSave() )
-        {
-            p_stream << itr->second->Name() << "\n";
-            itr->second->Save( p_stream );
-        }
-        ++itr;
-    }
-    p_stream << "[/LOGICS]\n";
-}
-
-
-
-LogicCollection& LogicCollection::operator=( const LogicCollection& p_right )
-{
-    if( m_collection.size() )
-        throw Exception( "ERROR: COPYING OVER LOGIC COLLECTION IS NOT ALLOWED!" );
-
-    LogicCollection& l = const_cast<LogicCollection&>( p_right );
-    m_collection = l.m_collection;
-    l.m_collection.Clear();
-
-    return *this;
-}
-
-LogicCollection::LogicCollection( const LogicCollection& p_right )
-{
-    LogicCollection& l = const_cast<LogicCollection&>( p_right );
-    m_collection = l.m_collection;
-    l.m_collection.Clear();
-}
+        l = LogicDB.Generate(p_name, p_id)
+        self.AddExisting(l)
+        
+    def Del(self, p_name):
+        l = self.m_collection.Get(p_name)
+        del l
+        self.m_collection.Del(p_name)
+        
+    def Has(self, p_name):
+        return self.m_collection.Has(p_name)
+    
+    def GetAttribute(self, p_module, p_attr):
+        return self.m_collection.Get(p_module).GetAttribute(p_attr)
+    
+    def DoAction(self, p_action):
+        for item in self.m_collection:
+            i = self.m_collection[item].DoAction(p_action)
+            if i != 0:
+                return i
+        return 0
+    
+    def Load(self, sr, prefix, p_id):
+        prefix += ":LOGICS"
+        for i in sr.llen(prefix):
+            item = sr.lindex(prefix, i)
+            self.Add(item, p_id)
+            c = self.Get(item)
+            c.Load(sr, prefix)
+            
+    def Save(self, sr, prefix):
+        prefix += ":LOGICS"
+        sr.ltrim(prefix, 2, 1)
+        for i in self.m_collection:
+            item = self.m_collection[i]
+            if item.CanSave():
+                sr.rpush(prefix. item.GetName())
+                item.Save(sr, prefix)

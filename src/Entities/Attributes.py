@@ -20,6 +20,13 @@ class Databank:
     def __init__(self):
         self.m_bank = {}
         
+    def __iter__(self):
+        for i in self.m_bank.keys():
+            yield i
+            
+    def __getitem__(self, index):
+        return self.m_bank[index]        
+        
     def Has(self, p_name):
         for i in self.m_bank:
             if i == p_name:

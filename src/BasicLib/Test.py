@@ -3,19 +3,27 @@ Created on 2012-4-14
 
 @author: Sky
 '''
-a = "1"
-a += "2" + "3"
-print(a)
-a = {}
-a["111"] = "123"
-a["333"] = "4444"
-print(a["111"][2])
-i = 0
-for i in a:
-    if i == "111":
-        print("xxx")
-        break
-i = "False"
-print(str(i.find("Fal")))
-print(str(i))
-print(type(i) == str)
+import sys
+import os
+import time
+
+def Import(modulename):
+    dirname = os.path.dirname(os.path.abspath(modulename))
+    filename, ext = os.path.splitext(os.path.basename(modulename))
+    if ext.lower() != ".py":
+        return None
+    if filename in sys.modules:
+        del sys.modules[filename]
+    if dirname:
+        sys.path.insert(0, dirname)
+    mod = __import__(filename)
+    if dirname:
+        del sys.path[0]
+    return mod
+
+while True:
+    mod = Import("../data/commands/test2.py")
+    getattr(mod, "xx")()
+    time.sleep(5)
+
+
