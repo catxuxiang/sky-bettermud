@@ -53,8 +53,8 @@ class MapDatabase(Database):
     def FindName(self, p_name):
         for i in self.m_container.values():
             if i.GetName().lower() == p_name.lower().strip():
-                return i
-        return None
+                return i.GetId()
+        return "0"
     
     def Purge(self):
         self.m_container = {}    

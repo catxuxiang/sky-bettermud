@@ -1,6 +1,8 @@
-import sys
+class B:
+    pass
 
-def xx():
-    print("fuck you!!!")
+b = B()
+print(type(b) == B)
 
-A = "111"
+def AA(x, y, z):
+    print(x + y + z)

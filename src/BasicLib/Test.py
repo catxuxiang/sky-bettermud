@@ -21,9 +21,17 @@ def Import(modulename):
         del sys.path[0]
     return mod
 
-while True:
-    mod = Import("../data/commands/test2.py")
-    getattr(mod, "xx")()
-    time.sleep(5)
+mod = Import("../data/commands/test2.py")
+print(mod)
+getattr(mod, "AA")(1, 2, 3)
+print("B" in dir(mod))
+mod = getattr(mod, "B")()
+print(mod)
+cls = getattr(mod, "__class__")
+print(cls)
+print(getattr(cls, "__name__"))
+
+
+
 
 
