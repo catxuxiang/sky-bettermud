@@ -127,7 +127,7 @@ class character:
         return self.m_character.HasLogic(p_logic)
     
     def DoAction(self, p_act, p_data1, p_data2, p_data3, p_data4, p_data):
-        self.m_character =1
+        self.m_character = 1
         if type(p_act) != str:
             return self.m_character.DoAction(p_act)
         else:
