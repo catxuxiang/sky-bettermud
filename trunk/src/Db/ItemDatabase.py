@@ -17,21 +17,22 @@ class ItemDatabase(TemplateInstanceDatabase):
                     id1 = sr.lindex(subfolder, j)
                     data = ItemTemplate()
                     data.SetId(id1)
-                    self.LoadEntityTemplate(data)
+                    self.LoadEntityTemplate(data, subfolder + ":" + id1)
         else:
             subfolder = folder + ":" + p_key
             for j in sr.llen(subfolder):
                 id1 = sr.lindex(subfolder, j)
                 data = ItemTemplate()
                 data.SetId(id1)
-                self.LoadEntityTemplate(data)  
-                
+                self.LoadEntityTemplate(data, subfolder + ":" + id1)  
+
     def SaveDb(self, folder, m_items):
         sr = TemplateInstanceDatabase.Sr
         sr.ltrim(folder, 2, 1)
-        for i in m_items:
-            sr.rpush(folder, i.GetId())
-            self.SaveEntity(i, folder) 
+        for id1 in m_items:
+            i = self.Get(id1)
+            sr.rpush(folder, id1)
+            self.SaveEntity(i, folder + ":" + id1) 
             
     def LoadDb(self, folder):
         sr = TemplateInstanceDatabase.Sr
@@ -40,8 +41,8 @@ class ItemDatabase(TemplateInstanceDatabase):
             id1 = sr.lindex(folder, i)
             data = Item()
             data.SetId(id1)
-            self.LoadEntity(data, folder)
-            items.append(data)
-        return items              
+            self.LoadEntity(data, folder + ":" + id1)
+            items.append(id1)
+        return items  
     
 ItemDB = ItemDatabase()

@@ -11,9 +11,9 @@ from accessors.RoomAccessor import room
 
 class portalentry:
     def __init__(self):
-        self.startroom = None
+        self.startroom = "0"
         self.directionname = ""
-        self.destinationroom = None
+        self.destinationroom = "0"
         
     def Load(self, sr, prefix):
         self.startroom = sr.get(prefix + ":STARTROOM")
@@ -21,9 +21,9 @@ class portalentry:
         self.destinationroom = sr.get(prefix + ":DESTROOM")
         
     def Save(self, sr, prefix):
-        sr.set(prefix + ":STARTROOM", self.startroom.GetId())
+        sr.set(prefix + ":STARTROOM", self.startroom)
         sr.set(prefix + ":DIRECTION", self.directionname)
-        sr.set(prefix + ":DESTROOM", self.destinationroom.GetId())
+        sr.set(prefix + ":DESTROOM", self.destinationroom)
 
 class Portal(LogicEntity, DataEntity, HasRegion):
     def __init__(self):
@@ -50,7 +50,7 @@ class Portal(LogicEntity, DataEntity, HasRegion):
         self.Add()
         
     def Save(self, sr, prefix):
-        sr.set(prefix + ":REGION", self.m_region.GetId())
+        sr.set(prefix + ":REGION", self.m_region)
         sr.set(prefix + ":NAME", self.m_name)
         sr.set(prefix + ":DESCRIPTION", self.m_description)
         
@@ -59,13 +59,14 @@ class Portal(LogicEntity, DataEntity, HasRegion):
         for portal in self.m_portals:
             sr.rpush(prefix + ":ENTRIES", i)
             portal.Save(sr, prefix + ":ENTRIES:" + i)
+            i += 1
             
         self.m_attributes.Save(sr, prefix)
         
         self.m_logic.Save(sr, prefix)
         
     def Remove(self):
-        if self.m_region != None:
+        if self.m_region != "0":
             reg = region(self.m_region)
             reg.DelPortal(self.m_id)
             
@@ -74,7 +75,7 @@ class Portal(LogicEntity, DataEntity, HasRegion):
             r.DelPortal(self.m_id)
             
     def Add(self):
-        if self.m_region != None:
+        if self.m_region != "0":
             reg = region(self.m_region)
             reg.AddPortal(self.m_id)
             

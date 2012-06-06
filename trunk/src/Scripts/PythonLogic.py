@@ -3,6 +3,7 @@ Created on 2012-6-3
 
 @author: Sky
 '''
+from Scripts.Logic import Logic
 
 class PythonLogic(Logic):
     def __init__(self, p_inst):

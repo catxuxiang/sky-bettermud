@@ -113,7 +113,7 @@ class item:
     def HasLogic(self, p_logic):
         return self.m_item.HasLogic(p_logic)
     
-    def DoAction(self, p_action, p_data1, p_data2, p_data3, p_data4, p_data):
+    def DoAction(self, p_action, p_data1 = "0", p_data2 = "0", p_data3 = "0", p_data4 = "0", p_data = ""):
         if type(p_action) != str:
             return self.m_item.DoAction(p_action)
         else:

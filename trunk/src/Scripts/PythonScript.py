@@ -18,7 +18,7 @@ class PythonCallable:
     def Get(self):
         return self.m_module.Get()
     
-    def Call(self, p_name, p_arg1 = None, p_arg2 = None, p_arg3 = None, p_arg4 = None, p_arg5 = None, p_arg6 = None):
+    def Call(self, p_name, p_arg1 = "", p_arg2 = "0", p_arg3 = "0", p_arg4 = "0", p_arg5 = "0", p_arg6 = ""):
         return getattr(self.m_module, p_name)(p_arg1, p_arg2, p_arg3, p_arg4, p_arg5, p_arg6)
     
 class PythonModule(PythonCallable):

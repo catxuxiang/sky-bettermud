@@ -11,7 +11,6 @@ class Database:
     def Create(self, p_item):
         raise Exception("Abstract Method!")
     
-    
     def LoadEntity(self, p_entity, prefix):
         self.Create(p_entity)
         p_entity.Load(sr, prefix)
@@ -68,7 +67,7 @@ class TemplateInstanceDatabase:
                 
     def Get(self, p_id):
         for i in self.m_cleanup:
-            if i.GetId() == p_id:
+            if i == p_id:
                 raise Exception("Template Instance Database: Cleaned Up Item Reference!")
         return self.m_instances.Get(p_id)
     
@@ -101,17 +100,17 @@ class TemplateInstanceDatabase:
     def FindName(self, p_name):
         return self.m_instances.FindName(p_name)
     
-    def LoadEntityTemplate(self, p_entity):
-        self.m_templates.LoadEntity(p_entity)
+    def LoadEntityTemplate(self, p_entity, prefix):
+        self.m_templates.LoadEntity(p_entity, prefix)
         
-    def SaveEntityTemplate(self, p_entity):
-        self.m_templates.SaveEntity(p_entity)
+    def SaveEntityTemplate(self, p_entity, prefix):
+        self.m_templates.SaveEntity(p_entity, prefix)
         
-    def LoadEntity(self, p_entity):
-        self.m_instances.LoadEntity(p_entity)
+    def LoadEntity(self, p_entity, prefix):
+        self.m_instances.LoadEntity(p_entity, prefix)
         
-    def SaveEntity(self, p_entity):
-        self.m_instances.SaveEntity(p_entity)
+    def SaveEntity(self, p_entity, prefix):
+        self.m_instances.SaveEntity(p_entity, prefix)
 
     def Purge(self):
         self.m_templates.Purge()

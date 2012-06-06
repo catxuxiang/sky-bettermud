@@ -4,6 +4,12 @@ Created on 2012-6-1
 @author: Sky
 '''
 from Entities.Action import Action
+from Db.RegionDatabase import RegionDB
+from Db.ItemDatabase import ItemDB
+from Db.CharacterDatabase import CharacterDB
+from Db.RoomDatabase import RoomDB
+from Db.PortalDatabase import PortalDB
+
 class region:
     def __init__(self, p_data):
         if type(p_data) == str:
@@ -46,13 +52,15 @@ class region:
     
     def SeekItem(self, p_name):
         p_name = p_name.lower().strip()
-        for i in self.m_region.m_items:
+        for id1 in self.m_region.m_items:
+            i = ItemDB.Get(id1)
             if i.GetName().lower() == p_name:
-                return i
-        for i in self.m_region.m_items:
+                return id1
+        for id1 in self.m_region.m_items:
+            i = ItemDB.Get(id1)
             if i.GetName().lower().find(p_name) == 0:
-                return i
-        return None
+                return id1
+        return "0"
     
     def AddCharacter(self, p_id):
         self.m_region.AddCharacter(p_id)
@@ -65,13 +73,15 @@ class region:
     
     def SeekCharacter(self, p_name):
         p_name = p_name.lower().strip()
-        for i in self.m_region.m_characters:
+        for id1 in self.m_region.m_characters:
+            i = CharacterDB.Get(id1)
             if i.GetName().lower() == p_name:
-                return i
-        for i in self.m_region.m_characters:
+                return id1
+        for id1 in self.m_region.m_characters:
+            i = CharacterDB.Get(id1)
             if i.GetName().lower().find(p_name) == 0:
-                return i
-        return None
+                return id1
+        return "0"
     
     def AddRoom(self, p_id):
         self.m_region.AddRoom(p_id)
@@ -84,13 +94,15 @@ class region:
     
     def SeekRoom(self, p_name):
         p_name = p_name.lower().strip()
-        for i in self.m_region.m_rooms:
+        for id1 in self.m_region.m_rooms:
+            i = RoomDB.Get(id1)
             if i.GetName().lower() == p_name:
-                return i
-        for i in self.m_region.m_rooms:
+                return id1
+        for id1 in self.m_region.m_rooms:
+            i = RoomDB.Get(id1)
             if i.GetName().lower().find(p_name) == 0:
-                return i
-        return None
+                return id1
+        return "0"
     
     def AddPortal(self, p_id):
         self.m_region.AddPortal(p_id)
@@ -103,13 +115,15 @@ class region:
     
     def SeekPortal(self, p_name):
         p_name = p_name.lower().strip()
-        for i in self.m_region.m_portals:
+        for id1 in self.m_region.m_portals:
+            i = PortalDB.Get(id1)
             if i.GetName().lower() == p_name:
-                return i
-        for i in self.m_region.m_portals:
+                return id1
+        for id1 in self.m_region.m_portals:
+            i = PortalDB.Get(id1)
             if i.GetName().lower().find(p_name) == 0:
-                return i
-        return None
+                return id1
+        return "0"
     
     def AddLogic(self, p_logic):
         return self.m_region.AddLogic(p_logic)
@@ -126,7 +140,7 @@ class region:
     def HasLogic(self, p_logic):
         return self.m_region.HasLogic(p_logic)
     
-    def DoAction(self, p_action, p_data1, p_data2, p_data3, p_data4, p_data):
+    def DoAction(self, p_action, p_data1 = "0", p_data2 = "0", p_data3 = "0", p_data4 = "0", p_data = ""):
         if type(p_action) != str:
             return self.m_region.DoAction(p_action)
         else:

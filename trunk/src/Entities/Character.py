@@ -10,19 +10,23 @@ from Db.ItemDatabase import ItemDB
 from Db.CommandDatabase import CommandDB
 from accessors.RegionAccessor import region
 from accessors.RoomAccessor import room
+from Entities.Attributes import Databank
+from Entities.Item import Item
 
 class CharacterTemplate(Entity, DataEntity):
     def __init__(self):
         Entity.__init__(self)
         self.m_commands = []
         self.m_logics = []
+        self.m_attributes = Databank()
+        self.m_region = "0" 
+        self.m_room = "0"
         
     def Load(self, sr, prefix):
-        prefix += ":" + self.GetId()
         self.m_name = sr.get(prefix + ":NAME")
         self.m_description = sr.get(prefix + ":DESCRIPTION")
         
-        self.m_attributes.Load(prefix + ":")
+        self.m_attributes.Load(prefix)
         
         commands = sr.get(prefix + ":COMMANDS").split(" ")
         self.m_commands = []
@@ -36,7 +40,7 @@ class CharacterTemplate(Entity, DataEntity):
             
 class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasItems):
     def __init__(self):
-        self.m_account = None
+        self.m_account = "0"
         self.m_loggedin = False
         self.m_quiet = False
         self.m_verbose = True
@@ -45,7 +49,9 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
         self.m_templateid = p_template.GetId()
         self.m_name = p_template.GetName()
         self.m_description = p_template.GetDescription()
-        self.m_attributes = p_template.m_attributes
+        self.m_attributes = Databank()
+        for i in p_template.m_attributes.m_bank.keys():
+            self.m_attributes.Add(i, p_template.m_attributes.m_bank[i])
         
         for i in p_template.m_commands:
             self.AddCommand(i)
@@ -57,14 +63,13 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
         if (not self.IsPlayer()) or self.IsLoggedIn():
             self.Remove()
             
-        prefix += ":" + self.GetId()
         self.m_name = sr.get(prefix + ":NAME")
         self.m_description = sr.get(prefix + ":DESCRIPTION")
         self.m_room = sr.get(prefix + ":ROOM")
         self.m_region = sr.get(prefix + ":REGION")
         
         self.m_templateid = sr.get(prefix + ":TEMPLATEDID")
-        self.m_account = sr.get(prefix + ":DESCRIPTION")
+        self.m_account = sr.get(prefix + ":ACCOUNT")
         self.m_quiet = sr.get(prefix + ":QUIET")
         if self.m_quiet == "False":
             self.m_quiet = False
@@ -84,7 +89,7 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
             command = sr.lindex(prefix + ":COMMANDS", i)
             if self.AddCommand(command):
                 c = self.m_commands[len(self.m_commands) - 1]
-                c.Load(sr, prefix + ":COMMANDS")
+                c.Load(sr, prefix + ":COMMANDS:" + command)
             else:
                 raise Exception("Cannot load command: " + command)
             
@@ -93,22 +98,24 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
         self.m_items = []
         for i in range(0, sr.llen(prefix + ":ITEMS")):
             id1 = sr.lindex(prefix + ":ITEMS", i)
-            self.m_items.append(prefix + ":ITEMS:" + id1)
+            self.m_items.append(id1)
+            item = Item()
+            item.SetId(id1)
+            ItemDB.LoadEntity(item, prefix + ":ITEMS:" + id1);
             
         if (not self.IsPlayer()) or self.IsLoggedIn():
             self.Add()
             
     def Save(self, sr, prefix):
-        prefix += ":" + self.GetId()
         sr.set(prefix + ":NAME", self.m_name)
         sr.set(prefix + ":DESCRIPTION", self.m_description)
-        sr.set(prefix + ":ROOM", self.m_room.GetId())
-        sr.set(prefix + ":REGION", self.m_region.GetId())
+        sr.set(prefix + ":ROOM", self.m_room)
+        sr.set(prefix + ":REGION", self.m_region)
         
-        sr.set(prefix + ":DESCRIPTION", self.m_templateid)
-        sr.set(prefix + ":DESCRIPTION", self.m_account.GetId())
-        sr.set(prefix + ":DESCRIPTION", str(self.m_quiet))
-        sr.set(prefix + ":DESCRIPTION", str(self.m_verbose))
+        sr.set(prefix + ":TEMPLATEDID", self.m_templateid)
+        sr.set(prefix + ":ACCOUNT", self.m_account)
+        sr.set(prefix + ":QUIET", str(self.m_quiet))
+        sr.set(prefix + ":VERBOSE", str(self.m_verbose))
         
         # save my attributes to disk
         self.m_attributes.Save(sr, prefix)
@@ -117,14 +124,15 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
         for i in self.m_commands:
             name = i.GetName()
             sr.rpush(prefix + ":COMMANDS", name)
-            i.Save(sr, prefix + ":COMMANDS")
+            i.Save(sr, prefix + ":COMMANDS:" + name)
             
         self.m_logic.Save(sr, prefix)
         
         sr.ltrim(prefix + ":ITEMS", 2, 1)
         for i in self.m_items:
-            sr.rpush(prefix + ":ITEMS", i.GetId())
-            ItemDB.SaveEntity(i, prefix + ":ITEMS")
+            sr.rpush(prefix + ":ITEMS", i)
+            e = ItemDB.Get(i)
+            ItemDB.SaveEntity(e, prefix + ":ITEMS:" + i)
             
     def FindCommand(self, p_name):
         for i in self.m_commands:
@@ -154,14 +162,13 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
             return False
         
     def DelCommand(self, p_command):
-        index = -1
         i = 0
         for command in self.m_commands:
             if command.GetName().lower() == p_command.lower().strip():
-                index = i
+                break
             i += 1
-        if index != -1:
-            del self.m_commands[index]
+        if i < len(self.m_commands):
+            del self.m_commands[i]
             return True
         else:
             return False
@@ -174,10 +181,9 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
         r.AddCharacter(self.m_id)
         
     def Remove(self):
-        if self.m_region != None and self.m_room != None:
+        if self.m_region != "0" and self.m_room != "0":
             reg = region(self.m_region)
             reg.DelCharacter(self.m_id)
             
             r = room(self.m_room)
             r.DelCharacter(self.m_id)
-     

@@ -18,16 +18,14 @@ class LogicEntity(Entity):
             self.m_logic.Add(p_logic, self.m_id)
             return True
         except Exception:
-            pass
-        return False
+            return False
     
     def AddExistingLogic(self, p_logic):
         try:
             self.m_logic.AddExisting(p_logic)
             return True
         except Exception:
-            pass
-        return False
+            return False
 
     def DelLogic(self, p_logic):
         try:
@@ -36,8 +34,7 @@ class LogicEntity(Entity):
             self.m_logic.Del(p_logic)
             return True
         except Exception:
-            pass
-        return False
+            return False
     
     def GetLogic(self, p_logic):
         return self.m_logic.Get(p_logic)
@@ -46,10 +43,9 @@ class LogicEntity(Entity):
         try:
             return self.m_logic.Has(p_logic)
         except Exception:
-            pass
-        return False
+            return False
     
-    def DoAction(self, p_action, p_data1 = 0, p_data2 = 0, p_data3 = 0, p_data4 = 0, p_data = ""):
+    def DoAction(self, p_action, p_data1 = "0", p_data2 = "0", p_data3 = "0", p_data4 = "0", p_data = ""):
         if type(p_action) != str:
             return self.m_logic.DoAction(p_action)
         else:
@@ -62,15 +58,13 @@ class LogicEntity(Entity):
         self.m_hooks.append(p_hook)
         
     def DelHook(self, p_hook):
-        index = -1
         i = 0 
         for hook in self.m_hooks:
             if hook == p_hook:
-                index = i
                 break
             i += 1
-        if index != -1:
-            del self.m_hooks[index]
+        if i < len(self.m_hooks):
+            del self.m_hooks[i]
             
     def Hooks(self):
         return len(self.m_hooks)

@@ -12,21 +12,23 @@ from Db.AccountDatabase import AccountDB
 from Db.RegionDatabase import RegionDB
 from Db.CommandDatabase import CommandDB
 from Db.LogicDatabase import LogicDB
+from BasicLib.BasicLibTime import Timer
 
 class Game:
     def __init__(self):
         self.m_running = True
+        self.m_gametime = Timer()
         self.m_players = []
         
     def DoJoinQuantities(self, p_e, p_id):
         keep = item(p_id)
         
         for i in p_e.m_items:
-            if i.GetId() != keep.GetId():
+            if i != keep.GetId():
                 check = item(i)
                 if check.GetTemplateId() == keep.GetTemplateId():
                     keep.SetQuantity(keep.GetQuantity() + check.GetQuantity())
-                    self.DeleteItem(check.GetId())
+                    self.DeleteItem(i)
     
     def AddCharacter(self, p_id):
         self.m_characters.append(p_id)
@@ -155,35 +157,35 @@ class Game:
             i.DoAction(p_action)
             
     def RouteAction(self, p_action):
-        if p_action.data1 == ENTITYTYPE_CHARACTER:
+        if p_action.data1 == str(ENTITYTYPE_CHARACTER):
             character(p_action.data2).DoAction(p_action)
-        elif p_action.data1 == ENTITYTYPE_ITEM:
+        elif p_action.data1 == str(ENTITYTYPE_ITEM):
             item(p_action.data2).DoAction(p_action)
-        elif p_action.data1 == ENTITYTYPE_ROOM:
+        elif p_action.data1 == str(ENTITYTYPE_ROOM):
             room(p_action.data2).DoAction(p_action)
-        elif p_action.data1 == ENTITYTYPE_PORTAL:
+        elif p_action.data1 == str(ENTITYTYPE_PORTAL):
             portal(p_action.data2).DoAction(p_action)
-        elif p_action.data1 == ENTITYTYPE_REGION:
+        elif p_action.data1 == str(ENTITYTYPE_REGION):
             region(p_action.data2).DoAction(p_action)
             
     def ModifyAttribute(self, p_action):
-        if p_action.data1 == ENTITYTYPE_CHARACTER:
+        if p_action.data1 == str(ENTITYTYPE_CHARACTER):
             c = character(p_action.data2)
             c.SetAttribute(p_action.stringdata, p_action.data3)
             c.DoAction(p_action)
-        elif p_action.data1 == ENTITYTYPE_ITEM:
+        elif p_action.data1 == str(ENTITYTYPE_ITEM):
             i = item(p_action.data2)
             i.SetAttribute(p_action.stringdata, p_action.data3)
             i.DoAction(p_action)
-        elif p_action.data1 == ENTITYTYPE_ROOM:
+        elif p_action.data1 == str(ENTITYTYPE_ROOM):
             r = room(p_action.data2)
             r.SetAttribute(p_action.stringdata, p_action.data3)
             r.DoAction(p_action)
-        elif p_action.data1 == ENTITYTYPE_PORTAL:
+        elif p_action.data1 == str(ENTITYTYPE_PORTAL):
             p = portal(p_action.data2)
             p.SetAttribute(p_action.stringdata, p_action.data3)
             p.DoAction(p_action)
-        elif p_action.data1 == ENTITYTYPE_REGION:
+        elif p_action.data1 == str(ENTITYTYPE_REGION):
             reg = region(p_action.data2)
             reg.SetAttribute(p_action.stringdata, p_action.data3)
             reg.DoAction(p_action)
@@ -245,7 +247,7 @@ class Game:
         reg.DoAction(Action("enterregion", p_id))
         c.DoAction(Action("enterregion", p_id))
         r.DoAction(Action("enterroom", p_id, "0"))
-        self.ActionRoomCharacters(Action("enterroom", p_id, 0), r.GetId())
+        self.ActionRoomCharacters(Action("enterroom", p_id, "0"), r.GetId())
         self.ActionRoomItems(Action("enterroom", p_id, "0"), r.GetId())
     
     def Logout(self, p_id):
@@ -275,7 +277,7 @@ class Game:
     
         # make sure that character can enter portal from current room
         data = p.SeekStartRoom(c.GetRoom())
-        if not data:
+        if data == None:
             raise Exception("Character " + c.GetName() + " tried entering portal " + p.GetName() + " but has no exit from room " + c.GetRoom().GetName())
     
         # get the destination room
@@ -684,49 +686,49 @@ class Game:
 
     def LogicAction(self, p_act):
         modname = ParseWord(p_act.stringdata, 0)
-        l = "0"
-        if p_act.data1 == ENTITYTYPE_CHARACTER:
+        l = None
+        if p_act.data1 == str(ENTITYTYPE_CHARACTER):
             l = character(p_act.data2).GetLogic(modname)
-        elif p_act.data1 == ENTITYTYPE_ITEM:
+        elif p_act.data1 == str(ENTITYTYPE_ITEM):
             l = item(p_act.data2).GetLogic(modname)
-        elif p_act.data1 == ENTITYTYPE_ROOM:
+        elif p_act.data1 == str(ENTITYTYPE_ROOM):
             l = room(p_act.data2).GetLogic(modname)
-        elif p_act.data1 == ENTITYTYPE_PORTAL:
+        elif p_act.data1 == str(ENTITYTYPE_PORTAL):
             l = portal(p_act.data2).GetLogic(modname)
-        elif p_act.data1 == ENTITYTYPE_REGION:
+        elif p_act.data1 == str(ENTITYTYPE_REGION):
             l = region(p_act.data2).GetLogic(modname)
 
-        if not l:
+        if l == None:
             raise Exception("Game::LogicAction: Cannot load logic " + modname)
         l.DoAction(p_act)
     
     def AddLogic(self, p_act):
-        if p_act.data1 == ENTITYTYPE_CHARACTER:
+        if p_act.data1 == str(ENTITYTYPE_CHARACTER):
             character(p_act.data2).AddLogic(p_act.stringdata)
-        elif p_act.data1 == ENTITYTYPE_ITEM:
+        elif p_act.data1 == str(ENTITYTYPE_ITEM):
             item(p_act.data2).AddLogic(p_act.stringdata)
-        elif p_act.data1 == ENTITYTYPE_ROOM:
+        elif p_act.data1 == str(ENTITYTYPE_ROOM):
             room(p_act.data2).AddLogic(p_act.stringdata)
-        elif p_act.data1 == ENTITYTYPE_PORTAL:
+        elif p_act.data1 == str(ENTITYTYPE_PORTAL):
             portal(p_act.data2).AddLogic(p_act.stringdata)
-        elif p_act.data1 == ENTITYTYPE_REGION:
+        elif p_act.data1 == str(ENTITYTYPE_REGION):
             region(p_act.data2).AddLogic(p_act.stringdata)
 
     def DelLogic(self, p_act):
-        if p_act.data1 == ENTITYTYPE_CHARACTER:
+        if p_act.data1 == str(ENTITYTYPE_CHARACTER):
             character(p_act.data2).DelLogic(p_act.stringdata)
-        elif p_act.data1 == ENTITYTYPE_ITEM:
+        elif p_act.data1 == str(ENTITYTYPE_ITEM):
             item(p_act.data2).DelLogic(p_act.stringdata)
-        elif p_act.data1 == ENTITYTYPE_ROOM:
+        elif p_act.data1 == str(ENTITYTYPE_ROOM):
             room(p_act.data2).DelLogic(p_act.stringdata)
-        elif p_act.data1 == ENTITYTYPE_PORTAL:
+        elif p_act.data1 == str(ENTITYTYPE_PORTAL):
             portal(p_act.data2).DelLogic(p_act.stringdata)
-        elif p_act.data1 == ENTITYTYPE_REGION:
+        elif p_act.data1 == str(ENTITYTYPE_REGION):
             region(p_act.data2).DelLogic(p_act.stringdata)
 
     def DeleteItem(self, p_item):
         i = item(p_item)
-        if i.GetRegion():
+        if i.GetRegion() != "0":
             reg =region(i.GetRegion())
             reg.DelItem(p_item)
             r = room(i.GetRoom())
@@ -816,15 +818,15 @@ class Game:
     
     def FindPlayerOnlinePart(self, p_name):
         for i in self.m_players:
-            if i.GetName().lower().find(p_name.lower().strip()) == 0:
+            if character(i).GetName().lower().find(p_name.lower().strip()) == 0:
                 return i
-        return None
+        return "0"
     
     def FindPlayerOnlineFull(self, p_name):
         for i in self.m_players:
-            if i.GetName().lower() == p_name.lower().strip():
+            if character(i).GetName().lower() == p_name.lower().strip():
                 return i
-        return None        
+        return "0"        
     
     def FindPlayerPart(self, p_name):
         return CharacterDB.FindPlayerPart(p_name)
@@ -848,18 +850,14 @@ class Game:
         t = self.GetTime()
     
         index = 0
-        while len(self.m_timerregistry) > 0 and self.m_timerregistry[0].executiontime <= t:
+        while index < len(self.m_timerregistry):
             a = self.m_timerregistry[index]
-     
-            if a.valid:
+            if a.executiontime <= t and a.valid:
                 a.Unhook()
                 self.DoAction(a.actionevent)
-                
-            index += 1
-        
-        if index != 0:
-            for _ in range(index):
-                del self.m_timerregistry[0]
+                del self.m_timerregistry[index]
+            else:
+                index += 1
                 
     def AddTimedAction(self, p_action):
         print(p_action.actionevent.actiontype)

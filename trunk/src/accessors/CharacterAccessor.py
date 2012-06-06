@@ -5,6 +5,7 @@ Created on 2012-5-30
 '''
 from Db.CharacterDatabase import CharacterDB
 from Entities.Action import Action
+from Db.ItemDatabase import ItemDB
 
 class charactertemplate:
     def __init__(self, p_data):
@@ -103,13 +104,15 @@ class character:
 
     def SeekItem(self, p_name):
         p_name = p_name.lower().strip()
-        for i in self.m_character.m_items:
+        for id1 in self.m_character.m_items:
+            i = ItemDB.Get(id1)
             if i.GetName().lower() == p_name:
-                return i
-        for i in self.m_character.m_items:
+                return id1
+        for id1 in self.m_character.m_items:
+            i = ItemDB.Get(id1)
             if i.GetName().lower().find(p_name) == 0:
-                return i
-        return None
+                return id1
+        return "0"
     
     def AddLogic(self, p_logic):
         return self.m_character.AddLogic(p_logic)
@@ -126,8 +129,7 @@ class character:
     def HasLogic(self, p_logic):
         return self.m_character.HasLogic(p_logic)
     
-    def DoAction(self, p_act, p_data1, p_data2, p_data3, p_data4, p_data):
-        self.m_character = 1
+    def DoAction(self, p_act, p_data1 = "0", p_data2 = "0", p_data3 = "0", p_data4 = "0", p_data = ""):
         if type(p_act) != str:
             return self.m_character.DoAction(p_act)
         else:

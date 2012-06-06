@@ -32,7 +32,6 @@ class TimedAction:
             self.actionevent = act
         else:
             self.actionevent = Action(act, p_data1, p_data2, p_data3, p_data4, p_data)
-        self.valid = True
         
     def Hook(self):
         if self.actionevent.actiontype == "attemptsay" or self.actionevent.actiontype == "command" or self.actionevent.actiontype == "attemptenterportal" or self.actionevent.actiontype == "attempttransport" or self.actionevent.actiontype == "transport" or self.actionevent.actiontype == "destroycharacter":
@@ -47,15 +46,15 @@ class TimedAction:
         elif self.actionevent.actiontype == "destroyitem":
             item(self.actionevent.data1).AddHook(self)
         elif self.actionevent.actiontype == "messagelogic" or self.actionevent.actiontype == "dellogic" or self.actionevent.actiontype == "do" or self.actionevent.actiontype == "modifyattribute":
-            if self.actionevent.data1 == ENTITYTYPE_CHARACTER:
+            if self.actionevent.data1 == str(ENTITYTYPE_CHARACTER):
                 character(self.actionevent.data2).AddHook(self)
-            elif self.actionevent.data1 == ENTITYTYPE_ITEM:
+            elif self.actionevent.data1 == str(ENTITYTYPE_ITEM):
                 item(self.actionevent.data2).AddHook(self)
-            elif self.actionevent.data1 == ENTITYTYPE_ROOM:
+            elif self.actionevent.data1 == str(ENTITYTYPE_ROOM):
                 room(self.actionevent.data2).AddHook(self)
-            elif self.actionevent.data1 == ENTITYTYPE_PORTAL:
+            elif self.actionevent.data1 == str(ENTITYTYPE_PORTAL):
                 portal(self.actionevent.data2).AddHook(self)
-            elif self.actionevent.data1 == ENTITYTYPE_REGION:
+            elif self.actionevent.data1 == str(ENTITYTYPE_REGION):
                 region(self.actionevent.data2).AddHook(self)
                 
     def Unhook(self):
@@ -77,15 +76,15 @@ class TimedAction:
         elif self.actionevent.actiontype == "destroyitem":
             item(self.actionevent.data1).DelHook(self)
         elif self.actionevent.actiontype == "messagelogic" or self.actionevent.actiontype == "dellogic" or self.actionevent.actiontype == "do" or self.actionevent.actiontype == "modifyattribute":
-            if self.actionevent.data1 == ENTITYTYPE_CHARACTER:
+            if self.actionevent.data1 == str(ENTITYTYPE_CHARACTER):
                 character(self.actionevent.data2).DelHook(self)
-            elif self.actionevent.data1 == ENTITYTYPE_ITEM:
+            elif self.actionevent.data1 == str(ENTITYTYPE_ITEM):
                 item(self.actionevent.data2).DelHook(self)
-            elif self.actionevent.data1 == ENTITYTYPE_ROOM:
+            elif self.actionevent.data1 == str(ENTITYTYPE_ROOM):
                 room(self.actionevent.data2).DelHook(self)
-            elif self.actionevent.data1 == ENTITYTYPE_PORTAL:
+            elif self.actionevent.data1 == str(ENTITYTYPE_PORTAL):
                 portal(self.actionevent.data2).DelHook(self)
-            elif self.actionevent.data1 == ENTITYTYPE_REGION:
+            elif self.actionevent.data1 == str(ENTITYTYPE_REGION):
                 region(self.actionevent.data2).DelHook(self)
                 
     def Save(self, sr, prefix):

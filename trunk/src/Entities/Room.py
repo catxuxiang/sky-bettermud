@@ -12,8 +12,6 @@ class Room(LogicEntity, DataEntity, HasRegion, HasCharacters, HasItems, HasPorta
     def Load(self, sr, prefix):
         self.Remove()
         
-        prefix += ":" + self.m_id
-        
         self.m_region = sr.get(prefix + ":REGION")
         self.m_name = sr.get(prefix + ":NAME")
         self.m_description = sr.get(prefix + ":DESCRIPTION")
@@ -25,8 +23,6 @@ class Room(LogicEntity, DataEntity, HasRegion, HasCharacters, HasItems, HasPorta
         self.Add()
         
     def Save(self, sr, prefix):
-        prefix += ":" + self.m_id
-        
         sr.set(prefix + ":REGION", self.m_region.GetId())
         sr.set(prefix + ":NAME", self.m_name)
         sr.set(prefix + ":DESCRIPTION", self.m_description)
@@ -36,11 +32,11 @@ class Room(LogicEntity, DataEntity, HasRegion, HasCharacters, HasItems, HasPorta
         self.m_logic.Save(sr, prefix)
         
     def Add(self):
-        if self.m_region != None and self.m_id != "0":
+        if self.m_region != "0" and self.m_id != "0":
             r = region(self.m_region)
             r.AddRoom(self.m_id)
             
     def Remove(self):
-        if self.m_region != None and self.m_id != "0":
+        if self.m_region != "0" and self.m_id != "0":
             r = region(self.m_region)
             r.DelRoom(self.m_id)

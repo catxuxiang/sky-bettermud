@@ -41,7 +41,7 @@ class Entity:
         
 class HasRegion:
     def __init__(self):
-        self.m_region = None
+        self.m_region = "0"
         
     def GetRegion(self):
         return self.m_region
@@ -51,7 +51,7 @@ class HasRegion:
         
 class HasRoom:
     def __init__(self):
-        self.m_room = None
+        self.m_room = "0"
         
     def GetRoom(self):
         return self.m_room
@@ -61,7 +61,7 @@ class HasRoom:
         
 class HasTemplateId:
     def __init__(self):
-        self.m_templateid = None
+        self.m_templateid = "0"
         
     def GetTemplateId(self):
         return self.m_templateid
@@ -78,14 +78,12 @@ class HasCharacters:
         
     def DelCharacter(self, p_character):
         i = 0
-        index = -1
         for character in self.m_characters:
             if character == p_character:
-                index = i
                 break
             i += 1
-        if index != -1:
-            del self.m_characters[index]
+        if i < len(self.m_characters):
+            del self.m_characters[i]
             
     def Characters(self):
         return len(self.m_characters)
@@ -99,14 +97,12 @@ class HasItems:
         
     def DelItem(self, p_item):
         i = 0
-        index = -1
         for item in self.m_items:
             if item == p_item:
-                index = i
                 break
             i += 1
-        if index != -1:
-            del self.m_items[index]
+        if i < len(self.m_items):
+            del self.m_items[i]
             
     def Items(self):
         return len(self.m_items)
@@ -120,14 +116,12 @@ class HasRooms:
         
     def DelRoom(self, p_room):
         i = 0
-        index = -1
         for item in self.m_rooms:
             if item == p_room:
-                index = i
                 break
             i += 1
-        if index != -1:
-            del self.m_rooms[index]
+        if i < len(self.m_rooms):
+            del self.m_rooms[i]
             
     def Rooms(self):
         return len(self.m_rooms)
@@ -141,14 +135,12 @@ class HasPortals:
         
     def DelPortal(self, p_portal):
         i = 0
-        index = -1
         for portal in self.m_portals:
             if portal == p_portal:
-                index = i
                 break
             i += 1
-        if index != -1:
-            del self.m_portals[index]
+        if i < len(self.m_portals):
+            del self.m_portals[i]
             
     def Portals(self):
         return len(self.m_portals)
