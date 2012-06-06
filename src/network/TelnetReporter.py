@@ -102,7 +102,7 @@ class TelnetReporter(Logic):
         
         for i in r.m_portals:
             p = portal(i)
-            p.SeekStartRoom(p_id)
+            p = p.SeekStartRoom(p_id)
             
             string += p.directionname
             string += " - "

@@ -5,6 +5,9 @@ Created on 2012-6-1
 '''
 from Db.RoomDatabase import RoomDB
 from Entities.Action import Action
+from Db.ItemDatabase import ItemDB
+from Db.CharacterDatabase import CharacterDB
+from Db.PortalDatabase import PortalDB
 
 class room:
     def __init__(self, p_data):
@@ -54,13 +57,15 @@ class room:
     
     def SeekItem(self, p_name):
         p_name = p_name.lower().strip()
-        for i in self.m_room.m_items:
+        for id1 in self.m_room.m_items:
+            i = ItemDB.Get(id1)
             if i.GetName().lower() == p_name:
-                return i
-        for i in self.m_room.m_items:
+                return id1
+        for id1 in self.m_room.m_items:
+            i = ItemDB.Get(id1)
             if i.GetName().lower().find(p_name) == 0:
-                return i
-        return None
+                return id1
+        return "0"
     
     def AddCharacter(self, p_id):
         self.m_room.AddCharacter(p_id)
@@ -73,13 +78,15 @@ class room:
     
     def SeekCharacter(self, p_name):
         p_name = p_name.lower().strip()
-        for i in self.m_room.m_characters:
+        for id1 in self.m_room.m_characters:
+            i = CharacterDB.Get(id1)
             if i.GetName().lower() == p_name:
-                return i
-        for i in self.m_room.m_characters:
+                return id1
+        for id1 in self.m_room.m_characters:
+            i = CharacterDB.Get(id1)
             if i.GetName().lower().find(p_name) == 0:
-                return i
-        return None
+                return id1
+        return "0"
     
     def AddPortal(self, p_id):
         self.m_room.AddPortal(p_id)
@@ -92,13 +99,15 @@ class room:
     
     def SeekPortal(self, p_name):
         p_name = p_name.lower().strip()
-        for i in self.m_room.m_portals:
+        for id1 in self.m_room.m_portals:
+            i = PortalDB.Get(id1)
             if i.GetName().lower() == p_name:
-                return i
-        for i in self.m_room.m_portals:
+                return id1
+        for id1 in self.m_room.m_portals:
+            i = PortalDB.Get(id1)
             if i.GetName().lower().find(p_name) == 0:
-                return i
-        return None
+                return id1
+        return "0"
     
     def AddLogic(self, p_logic):
         return self.m_room.AddLogic(p_logic)
@@ -115,7 +124,7 @@ class room:
     def HasLogic(self, p_logic):
         return self.m_room.HasLogic(p_logic)
     
-    def DoAction(self, p_action, p_data1, p_data2, p_data3, p_data4, p_data):
+    def DoAction(self, p_action, p_data1 = "0", p_data2 = "0", p_data3 = "0", p_data4 = "0", p_data = ""):
         if type(p_action) != str:
             return self.m_room.DoAction(p_action)
         else:

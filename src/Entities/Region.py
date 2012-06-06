@@ -17,7 +17,6 @@ class Region(LogicEntity, DataEntity, HasCharacters, HasItems, HasRooms, HasPort
         self.m_diskname = p_name
         
     def Load(self, sr, prefix):
-        prefix += ":" + self.GetId()
         self.m_name = sr.get(prefix + ":NAME")
         self.m_description = sr.get(prefix + ":DESCRIPTION")
         
@@ -26,7 +25,6 @@ class Region(LogicEntity, DataEntity, HasCharacters, HasItems, HasRooms, HasPort
         self.m_logic.Load(sr, prefix, self.m_id)
         
     def Save(self, sr, prefix):
-        prefix += ":" + self.GetId()
         sr.set(prefix + ":NAME", self.m_name)
         sr.set(prefix + ":DESCRIPTION", self.m_description)
         

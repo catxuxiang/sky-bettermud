@@ -25,8 +25,8 @@ class GameWrap:
     def HasPlayer(self, p_id):
         return self.g_game.HasPlayer(p_id)
     
-    def Running(self):
-        return self.g_game.Running()
+    def GetRunning(self):
+        return self.g_game.GetRunning()
     
     def ShutDown(self):
         self.g_game.ShutDown()

@@ -11,4 +11,6 @@ print("11" in a)
 b = {}
 b["12"] = "23"
 b["34"] = "45"
-print("23" in b)
+for i in b.values():
+    del i
+print(b["34"])

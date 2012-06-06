@@ -27,7 +27,7 @@ class CPPCommandChat(CPPCommand):
         if len(p_parameters) == 0:
             self.m_character.DoAction("error", "0", "0", "0", "0", "Usage: " + self.GetUsage())
             return
-        g_game.AddActionAbsolute(0, "chat", self.m_character.GetId(), 0, 0, 0, p_parameters)
+        g_game.AddActionAbsolute(0, "chat", self.m_character.GetId(), "0", "0", "0", p_parameters)
             
 class CPPCommandSay(CPPCommand):
     def __init__(self, p_character):
@@ -37,7 +37,7 @@ class CPPCommandSay(CPPCommand):
         if len(p_parameters) == 0:
             self.m_character.DoAction("error", "0", "0", "0", "0", "Usage: " + self.GetUsage())
             return
-        g_game.AddActionAbsolute(0, "attemptsay", self.m_character.GetId(), 0, 0, 0, p_parameters)
+        g_game.AddActionAbsolute(0, "attemptsay", self.m_character.GetId(), "0", "0", "0", p_parameters)
             
 class CPPCommandKick(CPPCommand):
     def __init__(self, p_character):
@@ -51,6 +51,7 @@ class CPPCommandKick(CPPCommand):
         for i in g_game.m_players:
             if i.GetName().lower() == p_parameters.lower().strip():
                 c = i
+                break
         if c == None:
             self.m_character.DoAction("error", "0", "0", "0", "0", "Cannot find user " + p_parameters)
             return
@@ -85,7 +86,7 @@ class CPPCommandShutdown(CPPCommand):
         
 class CPPCommandLook(CPPCommand):
     def __init__(self, p_character):
-        CPPCommand.__init__(self, p_character, "look", "\"look <|object>\"", "Looks at the room (default), or at an optional object within the room" )
+        CPPCommand.__init__(self, p_character, "look", "\"look <|object>\"", "Looks at the room (default), or at an optional object within the room")
         
     def Execute(self, p_parameters):
         self.m_character.DoAction("seeroom", self.m_character.GetRoom())

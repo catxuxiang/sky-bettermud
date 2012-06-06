@@ -4,8 +4,12 @@ Created on 2012-5-30
 @author: Sky
 '''
 from Db.LogicDatabase import LogicDB
+from Entities.Attributes import Databank
 
 class LogicCollection:
+    def __init__(self):
+        self.m_collection = Databank()
+        
     def Get(self, p_name):
         return self.m_collection.Get(p_name)
     

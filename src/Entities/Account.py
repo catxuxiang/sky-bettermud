@@ -44,40 +44,36 @@ class Account(Entity, HasCharacters):
         self.m_allowedcharacters = p_num
         
     def Load(self, sr, prefix):
-        prefix += ":"
-        id1 = self.GetId()
-        self.m_name = sr.get(prefix + id1 + ":NAME")
-        self.m_password = sr.get(prefix + id1 + ":PASS")
-        self.m_logintime = int(sr.get(prefix + id1 + ":FIRSTLOGINTIME"))
-        self.m_accesslevel = int(sr.get(prefix + id1 + ":ACCESSLEVEL"))
-        self.m_allowedcharacters = int(sr.get(prefix + id1 + ":ALLOWEDCHARS"))
-        self.m_banned = sr.get(prefix + id1 + ":BANNED")
+        self.m_name = sr.get(prefix + ":NAME")
+        self.m_password = sr.get(prefix + ":PASS")
+        self.m_logintime = int(sr.get(prefix + ":FIRSTLOGINTIME"))
+        self.m_accesslevel = int(sr.get(prefix + ":ACCESSLEVEL"))
+        self.m_allowedcharacters = int(sr.get(prefix + ":ALLOWEDCHARS"))
+        self.m_banned = sr.get(prefix + ":BANNED")
         if (self.m_banned == "False"):
             self.m_banned = False
         else:
             self.m_banned = True
             
-        characters = sr.get(prefix + id1 + ":CHARACTERS").split(" ")
+        characters = sr.get(prefix + ":CHARACTERS").split(" ")
         self.m_characters = []
         for i in characters:
             if i != "0":
                 self.m_characters.append(i)
                 
     def Save(self, sr, prefix):
-        prefix += ":"        
-        id1 = self.GetId()
-        sr.set(prefix + id1 + ":NAME", self.m_name)
-        sr.set(prefix + id1 + ":PASS", self.m_password)
-        sr.set(prefix + id1 + ":FIRSTLOGINTIME", str(self.m_logintime))
-        sr.set(prefix + id1 + ":ACCESSLEVEL", str(self.m_accesslevel))
-        sr.set(prefix + id1 + ":ALLOWEDCHARS", str(self.m_allowedcharacters))
-        sr.set(prefix + id1 + ":BANNED", str(self.m_banned))
+        sr.set(prefix + ":NAME", self.m_name)
+        sr.set(prefix + ":PASS", self.m_password)
+        sr.set(prefix + ":FIRSTLOGINTIME", str(self.m_logintime))
+        sr.set(prefix + ":ACCESSLEVEL", str(self.m_accesslevel))
+        sr.set(prefix + ":ALLOWEDCHARS", str(self.m_allowedcharacters))
+        sr.set(prefix + ":BANNED", str(self.m_banned))
         
         string = ""
         for i in self.m_characters:
             string += i + " "
         string += "0"
-        sr.set(prefix + id1 + ":CHARACTERS", string)
+        sr.set(prefix + ":CHARACTERS", string)
 
 
 

@@ -73,7 +73,7 @@ class portal:
     def HasLogic(self, p_logic):
         return self.m_portal.HasLogic(p_logic)
     
-    def DoAction(self, p_action, p_data1, p_data2, p_data3, p_data4, p_data):
+    def DoAction(self, p_action, p_data1 = "0", p_data2 = "0", p_data3 = "0", p_data4 = "0", p_data = ""):
         if type(p_action) != str:
             return self.m_portal.DoAction(p_action)
         else:
@@ -101,13 +101,15 @@ class portal:
         self.m_portal.ClearLogicHooks(p_logic)
         
     def SeekStartRoom(self, p_room):
-        for i in self.m_portal.m_portals:
+        for id1 in self.m_portal.m_portals:
+            i = PortalDB.Get(id1)
             if i.startroom == p_room:
                 return i
         return None
     
     def SeekEndRoom(self, p_room):
-        for i in self.m_portal.m_portals:
+        for id1 in self.m_portal.m_portals:
+            i = PortalDB.Get(id1)
             if i.destinationroom == p_room:
                 return i
         return None

@@ -9,7 +9,7 @@ from Entities.Region import Region
 from Db.RoomDatabase import RoomDB
 from Db.PortalDatabase import PortalDB
 from Db.CharacterDatabase import CharacterDB
-from Db.ItemDB import ItemDB
+from Db.ItemDatabase import ItemDB
 
 class RegionDatabase(MapDatabase):
     def LoadAll(self):
@@ -20,18 +20,17 @@ class RegionDatabase(MapDatabase):
             
     def LoadRegion(self, p_name):
         id1 = "0"
-        for i in sr.hkeys("regions"):
-            if sr.hget("regions", i) == p_name:
+        for i in sr.hkeys("regionsHash"):
+            if sr.hget("regionsHash", i) == p_name:
                 id1 = i
                 break
         if id1 == "0":
             raise Exception("Invalid Region Names!")
         
-        dir1 = "regions:" + p_name
-        regionfilename = dir1 + ":region"
+        dir1 = "regions:" + id1
         reg = Region()
         reg.SetId(id1)
-        self.LoadEntity(reg, regionfilename)
+        self.LoadEntity(reg, dir1)
         reg.SetDiskname(p_name) 
             
         reg.m_rooms = RoomDB.LoadDb(dir1 + ":rooms")
@@ -41,19 +40,18 @@ class RegionDatabase(MapDatabase):
         
     def SaveRegion(self, p_id):
         reg = self.Get(p_id)
-        sr.hset("regions", p_id, reg.GetDiskname())
-        workingdir = "regions:" + reg.GetDiskname()
-        regionfilename = workingdir + ":region"
-        self.SaveEntity(self, reg, regionfilename)
+        sr.hset("regionsHash", p_id, reg.GetDiskname())
+        dir1 = "regions:" + p_id
+        self.SaveEntity(reg, dir1)
             
-        RoomDB.SaveDb(workingdir + ":rooms", reg.m_rooms)
-        PortalDB.SaveDb(workingdir + ":portals", reg.m_portals)
-        CharacterDB.SaveDb(workingdir + ":characters", reg.m_characters)
-        ItemDB.SaveDb(workingdir + ":items", reg.m_items)  
+        RoomDB.SaveDb(dir1 + ":rooms", reg.m_rooms)
+        PortalDB.SaveDb(dir1 + ":portals", reg.m_portals)
+        CharacterDB.SaveDb(dir1 + ":characters", reg.m_characters)
+        ItemDB.SaveDb(dir1 + ":items", reg.m_items)  
         
     def SaveAll(self):
-        for i in self.m_container.values():
-            if i.GetId() != "0":
-                self.SaveRegion(i.GetId())
+        for i in self.m_container.keys():
+            if i != "0":
+                self.SaveRegion(i)
                 
 RegionDB = RegionDatabase()

@@ -9,6 +9,7 @@ from Entities.LogicEntity import LogicEntity
 from accessors.CharacterAccessor import character
 from accessors.RegionAccessor import region
 from accessors.RoomAccessor import room
+from Entities.Attributes import Databank
 
 class ItemTemplate(Entity, DataEntity):
     def __init__(self):
@@ -44,8 +45,6 @@ class ItemTemplate(Entity, DataEntity):
             return self.m_name.replace("<#>", str(self.m_quantity))
         else:
             return self.m_name
-
-
     
 class Item(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId):
     def __init__(self):
@@ -67,13 +66,14 @@ class Item(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId):
         self.m_description = p_template.GetDescription()
         self.m_isquantity = p_template.m_isquantity
         self.m_quantity = p_template.m_quantity
-        self.m_attributes = p_template.m_attributes
+        self.m_attributes = Databank()
+        for i in p_template.m_attributes.m_bank.keys():
+            self.m_attributes.Add(i, p_template.m_attributes.m_bank[i])        
         
         for i in p_template.m_logics:
             self.AddLogic(i)
             
     def Load(self, sr, prefix):
-        prefix += ":" + self.GetId()
         self.Remove()
         
         self.m_name = sr.get(prefix + ":NAME")
@@ -96,11 +96,10 @@ class Item(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId):
         self.Add()
         
     def Save(self, sr, prefix):
-        prefix += ":" + self.GetId()
         sr.set(prefix + ":NAME", self.m_name)
         sr.set(prefix + ":DESCRIPTION", self.m_description)
-        sr.set(prefix + ":ROOM", self.m_room.GetId())
-        sr.set(prefix + ":REGION", self.m_region.GetId())
+        sr.set(prefix + ":ROOM", self.m_room)
+        sr.set(prefix + ":REGION", self.m_region)
         sr.set(prefix + ":ISQUANTITY", str(self.m_isquantity))
         sr.set(prefix + ":QUANTITY", str(self.m_quantity))
         sr.set(prefix + ":TEMPLATEID", self.m_templateid)
@@ -110,7 +109,7 @@ class Item(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId):
         self.m_logic.Save(sr, prefix)
         
     def Add(self):
-        if self.m_region == None:
+        if self.m_region == "0":
             # when regions are 0, that means the item is on a character
             c = character(self.m_room)
             c.AddItem(self.m_id)
