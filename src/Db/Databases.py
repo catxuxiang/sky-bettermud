@@ -32,13 +32,13 @@ class MapDatabase(Database):
         return False
     
     def Get(self, p_id):
-        return self.m_container[p_id]
+        return self.m_container[str(p_id)]
         
     def Create(self, p_item):
         self.m_container[p_item.GetId()] = p_item
         
     def Erase(self, p_id):
-        del self.m_container[p_id]
+        del self.m_container[str(p_id)]
             
     def FindOpenId(self):
         if len(self.m_container) == 0:

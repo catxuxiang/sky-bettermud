@@ -14,7 +14,7 @@ from Db.ItemDatabase import ItemDB
 class RegionDatabase(MapDatabase):
     def LoadAll(self):
         folder = "regions"
-        for i in sr.llen(folder):
+        for i in range(sr.llen(folder)):
             key = sr.lindex(folder, i)
             self.LoadRegion(key)
             

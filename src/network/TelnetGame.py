@@ -8,12 +8,13 @@ from Db.AccountDatabase import AccountDB
 from Entities.Action import Action
 from Entities.Game import g_game
 from network.TelnetReporter import TelnetReporter
+from accessors.CharacterAccessor import character
 
 class TelnetGame(ConnectionHandler):
     def __init__(self, p_conn, p_account, p_character):
         ConnectionHandler.__init__(self, p_conn)
         self.m_account = AccountDB.Get(p_account)
-        self.m_character = p_character
+        self.m_character = character(p_character)
         
     def Handle(self, p_data):
         g_game.DoAction("command", self.m_character.GetId(), "0", "0", "0", p_data)

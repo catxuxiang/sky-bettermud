@@ -12,13 +12,27 @@ from Db.AccountDatabase import AccountDB
 from Db.RegionDatabase import RegionDB
 from Db.CommandDatabase import CommandDB
 from Db.LogicDatabase import LogicDB
+from Db.AccountDatabase import AccountDatabase
+from Entities.Character import Character
+from Entities.Item import Item
+from Entities.Room import Room
+from Entities.Portal import Portal
 from BasicLib.BasicLibTime import Timer
+from BasicLib.Redis import sr
+from accessors.CharacterAccessor import character
+from accessors.ItemAccessor import item
+from accessors.RoomAccessor import room
+from accessors.PortalAccessor import portal
+from accessors.RegionAccessor import region
+from Scripts.CPPCommands import CPPCommandReloadScript, SetGameInstance
+
 
 class Game:
     def __init__(self):
         self.m_running = True
         self.m_gametime = Timer()
         self.m_players = []
+        self.m_timerregistry = []
         
     def DoJoinQuantities(self, p_e, p_id):
         keep = item(p_id)
@@ -776,8 +790,29 @@ class Game:
         LogicDB.Load()
     
         # load the regions
-        RegionDB.LoadAll()
+        
         CharacterDB.LoadPlayers()
+        
+        Character.CommandDB = CommandDB
+        Character.ItemDB = ItemDB
+        CPPCommandReloadScript.CommandDB = CommandDB
+        Character.room = room
+        Item.character = character
+        Item.room = room
+        Portal.room = room
+        TimedAction.character = character
+        TimedAction.item = item
+        TimedAction.room = room
+        TimedAction.portal = portal
+        
+        Portal.region = region
+        Room.region = region
+        RegionDB.LoadAll() 
+        
+        
+        Item.region = region  
+        TimedAction.region = region 
+        Character.region = region 
     
         self.LoadTimers()
     
@@ -805,7 +840,7 @@ class Game:
             i.Save(sr, "timers:GAMETIME:REGISTRY:" + index)
             index += 1
     
-    def LoadTimers(self, sr):
+    def LoadTimers(self):
         t = sr.get("timers:GAMETIME")
         if t != None:
             self.m_gametime.Reset(int(t))
@@ -867,3 +902,5 @@ class Game:
         p_action.Hook()
                 
 g_game = Game()
+SetGameInstance(g_game)
+AccountDatabase.g_game = g_game

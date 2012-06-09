@@ -22,7 +22,7 @@ class CharacterDatabase(TemplateInstanceDatabase):
         
     def LoadPlayers(self):
         sr = TemplateInstanceDatabase.Sr
-        for i in sr.llen("players"):
+        for i in range(sr.llen("players")):
             id1 = sr.lindex("players", i)
             self.LoadPlayer(id1)
             
@@ -30,10 +30,10 @@ class CharacterDatabase(TemplateInstanceDatabase):
         sr = TemplateInstanceDatabase.Sr
         folder = "templates:characters"
         if p_key == "":
-            for i in sr.llen(folder):
+            for i in range(sr.llen(folder)):
                 key = sr.lindex(folder, i)
                 subfolder = folder + ":" + key
-                for j in sr.llen(subfolder):
+                for j in range(sr.llen(subfolder)):
                     id1 = sr.lindex(subfolder, j)
                     ct = CharacterTemplate()
                     ct.SetId(id1)

@@ -6,8 +6,6 @@ Created on 2012-6-2
 from Entities.Entity import HasRegion
 from Entities.LogicEntity import LogicEntity
 from Entities.DataEntity import DataEntity
-from accessors.RegionAccessor import region
-from accessors.RoomAccessor import room
 
 class portalentry:
     def __init__(self):
@@ -26,7 +24,13 @@ class portalentry:
         sr.set(prefix + ":DESTROOM", self.destinationroom)
 
 class Portal(LogicEntity, DataEntity, HasRegion):
+    region = None
+    room = None
     def __init__(self):
+        LogicEntity.__init__(self)
+        DataEntity.__init__(self)
+        HasRegion.__init__(self)
+        
         self.m_portals = []
         
     def Load(self, sr, prefix):
@@ -37,7 +41,7 @@ class Portal(LogicEntity, DataEntity, HasRegion):
         self.m_description = sr.get(prefix + ":DESCRIPTION")
         
         self.m_portals = []
-        for i in sr.llen(prefix + ":ENTRIES"):
+        for i in range(sr.llen(prefix + ":ENTRIES")):
             data = sr.lindex(prefix + ":ENTRIES", i)
             e = portalentry()
             e.Load(sr, prefix + ":" + data)
@@ -67,18 +71,18 @@ class Portal(LogicEntity, DataEntity, HasRegion):
         
     def Remove(self):
         if self.m_region != "0":
-            reg = region(self.m_region)
+            reg = Portal.region(self.m_region)
             reg.DelPortal(self.m_id)
             
         for i in self.m_portals:
-            r = room(i.startroom)
+            r = Portal.room(i.startroom)
             r.DelPortal(self.m_id)
             
     def Add(self):
         if self.m_region != "0":
-            reg = region(self.m_region)
+            reg = Portal.region(self.m_region)
             reg.AddPortal(self.m_id)
             
         for i in self.m_portals:
-            r = room(i.startroom)
+            r = Portal.room(i.startroom)
             r.AddPortal(self.m_id)

@@ -3,12 +3,6 @@ Created on 2012-5-30
 
 @author: Sky
 '''
-from accessors.CharacterAccessor import character
-from accessors.ItemAccessor import item
-from accessors.RoomAccessor import room
-from accessors.PortalAccessor import portal
-from accessors.RegionAccessor import region
-
 ENTITYTYPE_CHARACTER = 0
 ENTITYTYPE_ITEM = 1
 ENTITYTYPE_ROOM = 2
@@ -25,37 +19,43 @@ class Action:
         self.stringdata = p_data
         
 class TimedAction:
-    def __init__(self, time, act, p_data1 = "0", p_data2 = "0", p_data3 = "0", p_data4 = "0", p_data = ""):
+    character = None
+    item = None
+    room = None
+    portal = None
+    region = None  
+    def __init__(self, time = 0, act = "", p_data1 = "0", p_data2 = "0", p_data3 = "0", p_data4 = "0", p_data = ""):
         self.valid = True
         self.executiontime = time
         if type(act) != str:
             self.actionevent = act
         else:
-            self.actionevent = Action(act, p_data1, p_data2, p_data3, p_data4, p_data)
+            if act != "":
+                self.actionevent = Action(act, p_data1, p_data2, p_data3, p_data4, p_data)
         
     def Hook(self):
         if self.actionevent.actiontype == "attemptsay" or self.actionevent.actiontype == "command" or self.actionevent.actiontype == "attemptenterportal" or self.actionevent.actiontype == "attempttransport" or self.actionevent.actiontype == "transport" or self.actionevent.actiontype == "destroycharacter":
-            character(self.actionevent.data1).AddHook(self)
+            TimedAction.character(self.actionevent.data1).AddHook(self)
         elif self.actionevent.actiontype == "attemptgetitem" or self.actionevent.actiontype == "attemptdropitem":
-            character(self.actionevent.data1).AddHook(self)
-            item(self.actionevent.data2).AddHook(self)
+            TimedAction.character(self.actionevent.data1).AddHook(self)
+            TimedAction.item(self.actionevent.data2).AddHook(self)
         elif self.actionevent.actiontype == "attemptgiveitem":
-            character(self.actionevent.data1).AddHook(self)
-            character(self.actionevent.data2).AddHook(self)
-            item(self.actionevent.data3).AddHook(self)
+            TimedAction.character(self.actionevent.data1).AddHook(self)
+            TimedAction.character(self.actionevent.data2).AddHook(self)
+            TimedAction.item(self.actionevent.data3).AddHook(self)
         elif self.actionevent.actiontype == "destroyitem":
-            item(self.actionevent.data1).AddHook(self)
+            TimedAction.item(self.actionevent.data1).AddHook(self)
         elif self.actionevent.actiontype == "messagelogic" or self.actionevent.actiontype == "dellogic" or self.actionevent.actiontype == "do" or self.actionevent.actiontype == "modifyattribute":
             if self.actionevent.data1 == str(ENTITYTYPE_CHARACTER):
-                character(self.actionevent.data2).AddHook(self)
+                TimedAction.character(self.actionevent.data2).AddHook(self)
             elif self.actionevent.data1 == str(ENTITYTYPE_ITEM):
-                item(self.actionevent.data2).AddHook(self)
+                TimedAction.item(self.actionevent.data2).AddHook(self)
             elif self.actionevent.data1 == str(ENTITYTYPE_ROOM):
-                room(self.actionevent.data2).AddHook(self)
+                TimedAction.room(self.actionevent.data2).AddHook(self)
             elif self.actionevent.data1 == str(ENTITYTYPE_PORTAL):
-                portal(self.actionevent.data2).AddHook(self)
+                TimedAction.portal(self.actionevent.data2).AddHook(self)
             elif self.actionevent.data1 == str(ENTITYTYPE_REGION):
-                region(self.actionevent.data2).AddHook(self)
+                TimedAction.region(self.actionevent.data2).AddHook(self)
                 
     def Unhook(self):
         self.valid = False
@@ -65,27 +65,27 @@ class TimedAction:
         self.actionevent.actiontype == "attempttransport" or \
         self.actionevent.actiontype == "transport" or \
         self.actionevent.actiontype == "destroycharacter":
-            character(self.actionevent.data1).DelHook(self)
+            TimedAction.character(self.actionevent.data1).DelHook(self)
         elif self.actionevent.actiontype == "attemptgetitem" or self.actionevent.actiontype == "attemptdropitem":
-            character(self.actionevent.data1).DelHook(self)
-            item(self.actionevent.data2).DelHook(self)
+            TimedAction.character(self.actionevent.data1).DelHook(self)
+            TimedAction.item(self.actionevent.data2).DelHook(self)
         elif self.actionevent.actiontype == "attemptgiveitem":
-            character(self.actionevent.data1).DelHook(self)
-            character(self.actionevent.data2).DelHook(self)
-            item(self.actionevent.data3).DelHook(self)
+            TimedAction.character(self.actionevent.data1).DelHook(self)
+            TimedAction.character(self.actionevent.data2).DelHook(self)
+            TimedAction.item(self.actionevent.data3).DelHook(self)
         elif self.actionevent.actiontype == "destroyitem":
-            item(self.actionevent.data1).DelHook(self)
+            TimedAction.item(self.actionevent.data1).DelHook(self)
         elif self.actionevent.actiontype == "messagelogic" or self.actionevent.actiontype == "dellogic" or self.actionevent.actiontype == "do" or self.actionevent.actiontype == "modifyattribute":
             if self.actionevent.data1 == str(ENTITYTYPE_CHARACTER):
-                character(self.actionevent.data2).DelHook(self)
+                TimedAction.character(self.actionevent.data2).DelHook(self)
             elif self.actionevent.data1 == str(ENTITYTYPE_ITEM):
-                item(self.actionevent.data2).DelHook(self)
+                TimedAction.item(self.actionevent.data2).DelHook(self)
             elif self.actionevent.data1 == str(ENTITYTYPE_ROOM):
-                room(self.actionevent.data2).DelHook(self)
+                TimedAction.room(self.actionevent.data2).DelHook(self)
             elif self.actionevent.data1 == str(ENTITYTYPE_PORTAL):
-                portal(self.actionevent.data2).DelHook(self)
+                TimedAction.portal(self.actionevent.data2).DelHook(self)
             elif self.actionevent.data1 == str(ENTITYTYPE_REGION):
-                region(self.actionevent.data2).DelHook(self)
+                TimedAction.region(self.actionevent.data2).DelHook(self)
                 
     def Save(self, sr, prefix):
         if not self.valid:

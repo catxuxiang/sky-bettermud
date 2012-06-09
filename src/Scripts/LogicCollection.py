@@ -40,11 +40,11 @@ class LogicCollection:
     
     def Load(self, sr, prefix, p_id):
         prefix += ":LOGICS"
-        for i in sr.llen(prefix):
-            item = sr.lindex(prefix, i)
-            self.Add(item, p_id)
-            c = self.Get(item)
-            c.Load(sr, prefix)
+        print(prefix)
+        for i in sr.hkeys(prefix):
+            self.Add(i, p_id)
+            c = self.Get(i)
+            c.Load(sr.hget(prefix, i))
             
     def Save(self, sr, prefix):
         prefix += ":LOGICS"

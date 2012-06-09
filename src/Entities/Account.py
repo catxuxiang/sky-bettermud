@@ -7,6 +7,8 @@ from Entities.Entity import Entity, HasCharacters
 from Entities.Attributes import accesslevel_Peon
 class Account(Entity, HasCharacters):
     def __init__(self):
+        Entity.__init__(self)
+        HasCharacters.__init__(self)
         self.m_password = "UNDEFINED"
         self.m_logintime = 0
         self.m_accesslevel = accesslevel_Peon

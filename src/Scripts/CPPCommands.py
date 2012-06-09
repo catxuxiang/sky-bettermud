@@ -7,9 +7,11 @@ from Scripts.CPPCommand import CPPCommand
 from Entities.Action import Action
 from BasicLib.BasicLibString import ParseWord
 from Scripts.Script import SCRIPTRELOADMODE_LEAVEEXISTING, SCRIPTRELOADMODE_RELOADFUNCTIONS
-from Db.CommandDatabase import CommandDB
 from accessors.RoomAccessor import room
-from Entities.Game import g_game
+
+g_game = None
+def SetGameInstance(game):
+    g_game = game
 
 class CPPCommandQuit(CPPCommand):
     def __init__(self, p_character):
@@ -121,6 +123,7 @@ class CPPCommandCommands(CPPCommand):
             self.m_character.DoAction("announce", "0", "0", "0", "0", "<$reset> " + i.GetName() + "| " + i.GetUsage())
 
 class CPPCommandReloadScript(CPPCommand):
+    CommandDB = None    
     def __init__(self, p_character):
         CPPCommand.__init__(self, p_character, "reloadscript", "\"reloadscript <type> <file> <keepall|keepdata>\"", "Reloads a script")
         
@@ -138,7 +141,7 @@ class CPPCommandReloadScript(CPPCommand):
             return
         
         if type1 == "commands":
-            CommandDB.Reload(file, flagtype)
+            CPPCommandReloadScript.CommandDB.Reload(file, flagtype)
             self.m_character.DoAction("announce", "0", "0", "0", "0", "Character Script " + file + " reloaded!")
             return
 
