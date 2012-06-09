@@ -10,10 +10,10 @@ class ItemDatabase(TemplateInstanceDatabase):
         sr = TemplateInstanceDatabase.Sr
         folder = "templates:items"
         if p_key == "":
-            for i in sr.llen(folder):
+            for i in range(sr.llen(folder)):
                 key = sr.lindex(folder, i)
                 subfolder = folder + ":" + key
-                for j in sr.llen(subfolder):
+                for j in range(sr.llen(subfolder)):
                     id1 = sr.lindex(subfolder, j)
                     data = ItemTemplate()
                     data.SetId(id1)

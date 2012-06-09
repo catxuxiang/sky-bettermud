@@ -5,7 +5,7 @@ Created on 2012-5-2
 '''
 from SocketLib.SocketLibSocket import DataSocket
 from BasicLib.BasicLibTime import *
-from SocketLib.Telnet import Telnet
+from network.BetterTelnet import BetterTelnet
 
 BUFFERSIZE = 1024
 TIMECHUNK = 16
@@ -25,7 +25,7 @@ class Connection(DataSocket):
         self.m_creationtime = GetTimeMS()
         self.m_closed = False
         self.m_handlerstack = []
-        self.m_protocol = Telnet()
+        self.m_protocol = BetterTelnet()
         self.m_sendbuffer = ""
         
     def GetLastSendTime(self):
@@ -65,7 +65,7 @@ class Connection(DataSocket):
         self.m_datarate += len(byte)
         
         #tell the protocol policy object about the received data.
-        self.m_protocol.Translate(self, byte, len(byte))
+        self.m_protocol.Translate(self, byte)
         
     def GetLastReceiveTime(self):
         return self.m_lastReceiveTime

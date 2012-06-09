@@ -7,6 +7,7 @@ import os
 import sys
 from Scripts.PythonObject import PythonObject
 from Scripts.Script import SCRIPTRELOADMODE_LEAVEEXISTING
+from BasicLib.Redis import sr
 
 class PythonCallable:
     def __init__(self, p_object = None):
@@ -19,7 +20,7 @@ class PythonCallable:
         return self.m_module.Get()
     
     def Call(self, p_name, p_arg1 = "", p_arg2 = "0", p_arg3 = "0", p_arg4 = "0", p_arg5 = "0", p_arg6 = ""):
-        return getattr(self.m_module, p_name)(p_arg1, p_arg2, p_arg3, p_arg4, p_arg5, p_arg6)
+        return getattr(self.m_module.m_object, p_name)(p_arg1, p_arg2, p_arg3, p_arg4, p_arg5, p_arg6)
     
 class PythonModule(PythonCallable):
     def __init__(self):
@@ -110,8 +111,8 @@ class PythonInstance(PythonCallable):
         
         setattr(self.m_module.Get(), "__class__", cls.Get())
         
-    def Load(self, sr, prefix):
-        self.Call("LoadScript", sr.get(prefix + ":DATA"))
+    def Load(self, data):
+        self.Call("LoadScript", data)
         
     def Save(self, sr, prefix):
         sr.set(prefix + ":DATA", self.Call("SaveScript"))
@@ -124,12 +125,12 @@ class PythonDatabase:
     def __del__(self):
         self.m_modules = []
         
-    def Load(self, sr):
+    def Load(self):
         for i in range(0, sr.llen(self.m_directory)):
             modulename = sr.lindex(self.m_directory, i)
             self.LoadModule(modulename)
             
-    def AddModule(self, sr, p_module):
+    def AddModule(self, p_module):
         self.LoadModule(p_module)
         sr.rpush(self.m_directory, p_module)
         

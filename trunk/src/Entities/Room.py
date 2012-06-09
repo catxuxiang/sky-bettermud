@@ -6,9 +6,17 @@ Created on 2012-6-2
 from Entities.LogicEntity import LogicEntity
 from Entities.DataEntity import DataEntity
 from Entities.Entity import HasRegion, HasCharacters, HasItems, HasPortals
-from accessors.RegionAccessor import region
 
 class Room(LogicEntity, DataEntity, HasRegion, HasCharacters, HasItems, HasPortals):
+    region = None
+    def __init__(self):
+        LogicEntity.__init__(self)
+        DataEntity.__init__(self)
+        HasRegion.__init__(self)
+        HasCharacters.__init__(self)
+        HasItems.__init__(self)
+        HasPortals.__init__(self)
+        
     def Load(self, sr, prefix):
         self.Remove()
         
@@ -33,10 +41,10 @@ class Room(LogicEntity, DataEntity, HasRegion, HasCharacters, HasItems, HasPorta
         
     def Add(self):
         if self.m_region != "0" and self.m_id != "0":
-            r = region(self.m_region)
+            r = Room.region(self.m_region)
             r.AddRoom(self.m_id)
             
     def Remove(self):
         if self.m_region != "0" and self.m_id != "0":
-            r = region(self.m_region)
+            r = Room.region(self.m_region)
             r.DelRoom(self.m_id)

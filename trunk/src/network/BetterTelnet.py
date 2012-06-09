@@ -3,7 +3,6 @@ Created on 2012-6-4
 
 @author: Sky
 '''
-from SocketLib.Connection import BUFFERSIZE
 from SocketLib.Telnet import *
 
 g_telnetcolors=[[[0 for x in range(3)] for y in range(3)] for z in range(3)]
@@ -48,11 +47,11 @@ class BetterTelnet:
         for i in range(0, len(p_buffer)):
             c = p_buffer[i]
             buffersize = len(self.m_buffer)
-            if int(c) >= 32 and int(c) != 127 and buffersize < BUFFERSIZE:
-                self.m_buffer += c
+            if int(c) >= 32 and int(c) != 127 and buffersize < 1024:
+                self.m_buffer += chr(c)
             elif int(c) == 8 and buffersize > 0:
                 self.m_buffer = self.m_buffer[0:buffersize - 1]
-            elif c == '\n' or c == '\r':
+            elif c == 10 or c == 13:
                 if buffersize > 0 and p_conn.Handler() != None:
                     p_conn.Handler().Handle(self.m_buffer)
                     self.m_buffer = ""

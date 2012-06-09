@@ -8,6 +8,13 @@ from Entities.DataEntity import DataEntity
 from Entities.Entity import HasCharacters, HasItems, HasRooms, HasPortals
 class Region(LogicEntity, DataEntity, HasCharacters, HasItems, HasRooms, HasPortals):
     def __init__(self):
+        LogicEntity.__init__(self)
+        DataEntity.__init__(self)
+        HasCharacters.__init__(self)
+        HasItems.__init__(self)
+        HasRooms.__init__(self)
+        HasPortals.__init__(self)
+        
         self.m_diskname = ""
     
     def GetDiskname(self):

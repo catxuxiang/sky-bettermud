@@ -10,6 +10,8 @@ from BasicLib.BasicLibString import ParseWord
 
 class LogicEntity(Entity):
     def __init__(self):
+        Entity.__init__(self)
+        
         self.m_logic = LogicCollection()
         self.m_hooks = []
         

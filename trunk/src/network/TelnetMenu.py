@@ -12,6 +12,7 @@ from SocketLib.Telnet import *
 from accessors.CharacterAccessor import character
 from network.TelnetGame import TelnetGame
 from Db.CharacterDatabase import CharacterDB
+from Entities.Character import Character
 
 class TelnetMenu(ConnectionHandler):
     def __init__(self, p_conn, p_account):
@@ -37,7 +38,7 @@ class TelnetMenu(ConnectionHandler):
         elif option == 1:
             self.m_connection.AddHandler(TelnetMenuEnter(self.m_connection, self.m_account.GetId()))
         elif option == 2:
-            if self.m_account.Characters() >= self.m_account.AllowedCharacters():
+            if self.m_account.Characters() >= self.m_account.GetAllowedCharacters():
                 self.m_connection.Protocol().SendString(self.m_connection, "<#FF0000>Sorry, you are not allowed any more characters.\r\n")
                 return
             self.m_connection.AddHandler(TelnetMenuNew(self.m_connection, self.m_account.GetId()))
@@ -110,7 +111,7 @@ class TelnetMenuNew(ConnectionHandler):
         self.m_account = AccountDB.Get(p_account)
         self.m_char = "0"
         self.m_creationmod = PythonModule()
-        self.m_creationmod.Load(sr, "logon.logon")
+        self.m_creationmod.Load("../data/logon/logon.py")
         self.m_creationmod.Reload(SCRIPTRELOADMODE_LEAVEEXISTING)
         
     def Enter(self):
@@ -150,7 +151,7 @@ class TelnetMenuNew(ConnectionHandler):
             self.m_connection.RemoveHandler()
             return
         
-        if self.m_account.Characters() >= self.m_account.AllowedCharacters():
+        if self.m_account.Characters() >= self.m_account.GetAllowedCharacters():
             self.m_connection.Protocol().SendString(self.m_connection, "<#FF0000>Haha, nice try. You're not allowed any more characters!\r\n")
             return
         
@@ -160,7 +161,7 @@ class TelnetMenuNew(ConnectionHandler):
             self.m_connection.Protocol().SendString(self.m_connection, "<#FF0000>Invalid option, please try again: <#FFFFFF>")
             return
         
-        self.m_char = CharacterDB.Generate(self.m_char)
+        self.m_char = CharacterDB.Generate(self.m_char, Character())
         character(self.m_char).SetAccount(self.m_account.GetId())
         self.m_account.AddCharacter(self.m_char)
         
@@ -213,10 +214,18 @@ class TelnetMenuDelete(ConnectionHandler):
             return
         
         c = self.m_account.m_characters[option - 1]
-        self.m_char = c.GetId()
+        self.m_char = c
         
         self.m_connection.Protocol().SendString(self.m_connection, "<#FF0000>Really Delete Character? (Y/N) ")
         
+    def GetCharacters(self):
+        chars = ""
+        for i in range(len(self.m_account.m_characters)):
+            chars += " " + str(i + 1) + " - "
+            c = character(self.m_account.m_characters[i])
+            chars += c.GetName() + "\r\n"
+        return chars
+            
     def PrintCharacters(self):
         string = \
         "<#7F7F7F>-------------------------------------------------------------------------------\r\n" \
@@ -224,6 +233,7 @@ class TelnetMenuDelete(ConnectionHandler):
         "<#7F7F7F>-------------------------------------------------------------------------------\r\n"
         
         chars = " 0   - Go Back\r\n"
+        chars += self.GetCharacters()
         chars += \
         "<#7F7F7F>-------------------------------------------------------------------------------\r\n" \
         "Enter number of character to delete: "
@@ -264,6 +274,14 @@ class TelnetMenuEnter(ConnectionHandler):
         c = self.m_account.m_characters[option - 1]
         self.m_connection.SwitchHandler(TelnetGame(self.m_connection, self.m_account.GetId(), c))
         
+    def GetCharacters(self):
+        chars = ""
+        for i in range(len(self.m_account.m_characters)):
+            chars += " " + str(i + 1) + " - "
+            c = character(self.m_account.m_characters[i])
+            chars += c.GetName() + "\r\n"
+        return chars
+    
     def PrintCharacters(self):
         string = \
         "<#7F7F7F>-------------------------------------------------------------------------------\r\n" \
@@ -271,10 +289,7 @@ class TelnetMenuEnter(ConnectionHandler):
         "<#7F7F7F>-------------------------------------------------------------------------------\r\n"
         chars = " 0 - Go Back\r\n"
         
-        for i in range(len(self.m_account.m_characters)):
-            chars += " " + str(i) + " - "
-            c = character(self.m_account.m_characters[i])
-            chars += c.GetName() + "\r\n"
+        chars += self.GetCharacters()
             
         chars += \
         "<#7F7F7F>-------------------------------------------------------------------------------\r\n" \

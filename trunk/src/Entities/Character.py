@@ -6,10 +6,6 @@ Created on 2012-5-30
 from Entities.Entity import Entity, HasRoom, HasRegion, HasTemplateId, HasItems
 from Entities.DataEntity import DataEntity
 from Entities.LogicEntity import LogicEntity
-from Db.ItemDatabase import ItemDB
-from Db.CommandDatabase import CommandDB
-from accessors.RegionAccessor import region
-from accessors.RoomAccessor import room
 from Entities.Attributes import Databank
 from Entities.Item import Item
 
@@ -26,7 +22,7 @@ class CharacterTemplate(Entity, DataEntity):
         self.m_name = sr.get(prefix + ":NAME")
         self.m_description = sr.get(prefix + ":DESCRIPTION")
         
-        self.m_attributes.Load(prefix)
+        self.m_attributes.Load(sr, prefix)
         
         commands = sr.get(prefix + ":COMMANDS").split(" ")
         self.m_commands = []
@@ -39,11 +35,25 @@ class CharacterTemplate(Entity, DataEntity):
             self.m_logics.append(i)
             
 class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasItems):
+    CommandDB = None
+    ItemDB = None
+    region = None
+    room = None
     def __init__(self):
+        LogicEntity.__init__(self)
+        DataEntity.__init__(self)
+        HasRoom.__init__(self)
+        HasRegion.__init__(self)
+        HasTemplateId.__init__(self)
+        HasItems.__init__(self)
+        
         self.m_account = "0"
         self.m_loggedin = False
         self.m_quiet = False
         self.m_verbose = True
+        
+        self.m_lastcommand = ""
+        self.m_commands = []        
         
     def LoadTemplate(self, p_template):
         self.m_templateid = p_template.GetId()
@@ -101,7 +111,7 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
             self.m_items.append(id1)
             item = Item()
             item.SetId(id1)
-            ItemDB.LoadEntity(item, prefix + ":ITEMS:" + id1);
+            Character.ItemDB.LoadEntity(item, prefix + ":ITEMS:" + id1);
             
         if (not self.IsPlayer()) or self.IsLoggedIn():
             self.Add()
@@ -131,8 +141,8 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
         sr.ltrim(prefix + ":ITEMS", 2, 1)
         for i in self.m_items:
             sr.rpush(prefix + ":ITEMS", i)
-            e = ItemDB.Get(i)
-            ItemDB.SaveEntity(e, prefix + ":ITEMS:" + i)
+            e = Character.ItemDB.Get(i)
+            Character.ItemDB.SaveEntity(e, prefix + ":ITEMS:" + i)
             
     def FindCommand(self, p_name):
         for i in self.m_commands:
@@ -156,7 +166,7 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
             return False
         
         try:
-            self.m_commands.append(CommandDB.Generate(p_command, self.GetId()))
+            self.m_commands.append(Character.CommandDB.Generate(p_command, self.GetId()))
             return True
         except Exception:
             return False
@@ -174,16 +184,49 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
             return False
         
     def Add(self):
-        reg = region(self.m_region)
+        reg = Character.region(self.m_region)
         reg.AddCharacter(self.m_id)
         
-        r = room(self.m_room)
+        r = Character.room(self.m_room)
         r.AddCharacter(self.m_id)
         
     def Remove(self):
         if self.m_region != "0" and self.m_room != "0":
-            reg = region(self.m_region)
+            reg = Character.region(self.m_region)
             reg.DelCharacter(self.m_id)
             
-            r = room(self.m_room)
+            r = Character.room(self.m_room)
             r.DelCharacter(self.m_id)
+            
+    def GetAccount(self):
+        return self.m_account
+    
+    def GetQuiet(self):
+        return self.m_quiet
+    
+    def IsPlayer(self):
+        return self.m_account != 0
+    
+    def GetVerbose(self):
+        return self.m_verbose
+    
+    def GetLastCommand(self):
+        return self.m_lastcommand
+    
+    def IsLoggedIn(self):
+        return self.m_loggedin
+
+    def SetAccount(self, p_account):
+        self.m_account = p_account
+        
+    def SetQuiet(self, p_quiet):
+        self.m_quiet = p_quiet
+        
+    def SetVerbose(self, p_verbose):
+        self.m_verbose = p_verbose
+        
+    def SetLastCommand(self, p_command):
+        self.m_lastcommand = p_command
+        
+    def SetLoggedIn(self, p_loggedin):
+        self.m_loggedin = p_loggedin

@@ -6,13 +6,12 @@ Created on 2012-6-1
 from Entities.Entity import Entity, HasRoom, HasRegion, HasTemplateId
 from Entities.DataEntity import DataEntity
 from Entities.LogicEntity import LogicEntity
-from accessors.CharacterAccessor import character
-from accessors.RegionAccessor import region
-from accessors.RoomAccessor import room
 from Entities.Attributes import Databank
 
 class ItemTemplate(Entity, DataEntity):
     def __init__(self):
+        Entity.__init__(self)
+        DataEntity.__init__(self)
         self.m_isquantity = False
         self.m_quantity = 1
         self.m_logics = []
@@ -33,7 +32,7 @@ class ItemTemplate(Entity, DataEntity):
             self.m_isquantity = True
         self.m_quantity = int(sr.get(prefix + ":QUANTITY"))
         
-        self.Load(sr, prefix)
+        self.m_attributes.Load(sr, prefix)
         
         logics = sr.get(prefix + ":LOGICS").split(" ")
         self.m_logics = []
@@ -47,7 +46,16 @@ class ItemTemplate(Entity, DataEntity):
             return self.m_name
     
 class Item(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId):
+    character = None
+    region = None
+    room = None
     def __init__(self):
+        LogicEntity.__init__(self)
+        DataEntity.__init__(self)
+        HasRoom.__init__(self)
+        HasRegion.__init__(self)
+        HasTemplateId.__init__(self)
+        
         self.m_isquantity = False
         self.m_quantity = 1
         
@@ -110,27 +118,27 @@ class Item(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId):
         
     def Add(self):
         if self.m_region == "0":
-            # when regions are 0, that means the item is on a character
-            c = character(self.m_room)
+            # when regions are 0, that means the item is on a Item.character
+            c = Item.character(self.m_room)
             c.AddItem(self.m_id)
         else:
-            reg = region(self.m_region)
+            reg = Item.region(self.m_region)
             reg.AddItem(self.m_id)
             
-            r = room(self.m_room)
+            r = Item.room(self.m_room)
             r.AddItem(self.m_id)
             
     def Remove(self):
         if self.m_room == None:
             return
         
-        # when regions are 0, that means the item is on a character
+        # when regions are 0, that means the item is on a Item.character
         if self.m_region == None:
-            c = character(self.m_room)
+            c = Item.character(self.m_room)
             c.DelItem(self.m_id)
         else:
-            reg = region(self.m_region)
+            reg = Item.region(self.m_region)
             reg.DelItem(self.m_id)
             
-            r = room(self.m_room)
+            r = Item.room(self.m_room)
             r.DelItem(self.m_id)

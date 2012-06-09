@@ -18,7 +18,7 @@ LogonState_ENTERDEAD = 4
 
 class TelnetLogon(ConnectionHandler):
     def __init__(self, p_conn):
-        TelnetLogon.__init__(self, p_conn)
+        ConnectionHandler.__init__(self, p_conn)
         self.m_state = LogonState_ENTERNAME
         self.m_errors = 0
         self.m_name = ""

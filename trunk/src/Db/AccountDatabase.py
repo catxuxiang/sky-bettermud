@@ -8,7 +8,8 @@ from Entities.Account import Account
 from BasicLib.Redis import sr
 
 class AccountDatabase(MapDatabase):
-    def Create(self, g_game, p_name, p_pass):
+    g_game = None 
+    def Create(self, p_name, p_pass):
         id1 = self.FindOpenId()
         
         a = Account()
@@ -16,11 +17,11 @@ class AccountDatabase(MapDatabase):
         MapDatabase.Create(self, a)
         a.SetName(p_name)
         a.SetPass(p_pass)
-        a.SetLoginTime(g_game.GetTime())
+        a.SetLoginTime(AccountDatabase.g_game.GetTime())
         return id1
     
     def Load(self):
-        for i in sr.llen("accounts"):
+        for i in range(sr.llen("accounts")):
             id1 = sr.lindex("accounts", i)
             a = Account()
             a.SetId(id1)
