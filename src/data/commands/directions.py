@@ -1,4 +1,4 @@
-from Scripts.bettermudscript import Command
+from data.commands.PythonCommand import Command
 from accessors.CharacterAccessor import character
 
 

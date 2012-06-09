@@ -1,6 +1,6 @@
 from accessors.CharacterAccessor import character
 from accessors.RoomAccessor import room
-from Scripts.bettermudscript import Command, UsageError
+from data.commands.PythonCommand import Command, UsageError
 
 
 class action( Command ):

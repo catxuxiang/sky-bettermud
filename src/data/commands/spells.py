@@ -1,4 +1,4 @@
-from Scripts.bettermudscript import Command, UsageError, FindTarget
+from data.commands.PythonCommand import Command, UsageError, FindTarget
 from accessors.CharacterAccessor import character
 from accessors.RoomAccessor import room
 from accessors.ItemAccessor import item
