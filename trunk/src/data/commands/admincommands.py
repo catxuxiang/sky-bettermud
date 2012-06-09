@@ -175,7 +175,7 @@ class teleport( Command ):
     def Run( self, args ):
         if not args: raise UsageError
         me = character( self.me )
-        oldroom = me.Room()
+        #oldroom = me.Room()
         self.mud.DoAction( "attempttransport", me.GetId(), int(args), 0, 0, "" )
 
 
