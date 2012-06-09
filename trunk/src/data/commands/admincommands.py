@@ -1,4 +1,4 @@
-from Scripts.bettermudscript import Command, UsageError
+from data.commands.PythonCommand import Command, UsageError
 from accessors.CharacterAccessor import character
 from accessors.RoomAccessor import room
 from accessors.ItemAccessor import itemtemplate
