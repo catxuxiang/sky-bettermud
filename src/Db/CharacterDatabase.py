@@ -7,10 +7,10 @@ from Db.Databases import TemplateInstanceDatabase
 from Entities.Character import Character, CharacterTemplate
 
 class CharacterDatabase(TemplateInstanceDatabase):
-    def SavePlayers(self, prefix):
+    def SavePlayers(self):
         sr = TemplateInstanceDatabase.Sr
         sr.ltrim("players", 2, 1)
-        for i in self.m_instances.values():
+        for i in self.m_instances.m_container.values():
             if i.IsPlayer():
                 sr.rpush("players", i.GetId())
                 self.SaveEntity(i, "players:" + i.GetId())

@@ -9,16 +9,19 @@ from BasicLib.Redis import sr
 
 class AccountDatabase(MapDatabase):
     g_game = None 
-    def Create(self, p_name, p_pass):
-        id1 = self.FindOpenId()
-        
-        a = Account()
-        a.SetId(id1)
-        MapDatabase.Create(self, a)
-        a.SetName(p_name)
-        a.SetPass(p_pass)
-        a.SetLoginTime(AccountDatabase.g_game.GetTime())
-        return id1
+    def Create(self, p_name, p_pass = None):
+        if p_pass != None:
+            id1 = self.FindOpenId()
+            
+            a = Account()
+            a.SetId(id1)
+            MapDatabase.Create(self, a)
+            a.SetName(p_name)
+            a.SetPass(p_pass)
+            a.SetLoginTime(AccountDatabase.g_game.GetTime())
+            return id1
+        else:
+            MapDatabase.Create(self, p_name)
     
     def Load(self):
         for i in range(sr.llen("accounts")):

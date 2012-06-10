@@ -8,7 +8,6 @@ from Entities.DataEntity import DataEntity
 from Entities.Entity import HasRegion, HasCharacters, HasItems, HasPortals
 
 class Room(LogicEntity, DataEntity, HasRegion, HasCharacters, HasItems, HasPortals):
-    region = None
     def __init__(self):
         LogicEntity.__init__(self)
         DataEntity.__init__(self)
@@ -18,7 +17,7 @@ class Room(LogicEntity, DataEntity, HasRegion, HasCharacters, HasItems, HasPorta
         HasPortals.__init__(self)
         
     def Load(self, sr, prefix):
-        self.Remove()
+        #self.Remove()
         
         self.m_region = sr.get(prefix + ":REGION")
         self.m_name = sr.get(prefix + ":NAME")
@@ -28,10 +27,10 @@ class Room(LogicEntity, DataEntity, HasRegion, HasCharacters, HasItems, HasPorta
         
         self.m_logic.Load(sr, prefix, self.m_id)
         
-        self.Add()
+        #self.Add()
         
     def Save(self, sr, prefix):
-        sr.set(prefix + ":REGION", self.m_region.GetId())
+        sr.set(prefix + ":REGION", self.m_region)
         sr.set(prefix + ":NAME", self.m_name)
         sr.set(prefix + ":DESCRIPTION", self.m_description)
         
@@ -39,12 +38,12 @@ class Room(LogicEntity, DataEntity, HasRegion, HasCharacters, HasItems, HasPorta
         
         self.m_logic.Save(sr, prefix)
         
-    def Add(self):
+    def Add(self, region):
         if self.m_region != "0" and self.m_id != "0":
-            r = Room.region(self.m_region)
+            r = region(self.m_region)
             r.AddRoom(self.m_id)
             
-    def Remove(self):
+    def Remove(self, region):
         if self.m_region != "0" and self.m_id != "0":
-            r = Room.region(self.m_region)
+            r = region(self.m_region)
             r.DelRoom(self.m_id)

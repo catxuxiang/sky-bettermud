@@ -8,10 +8,10 @@ SCRIPTRELOADMODE_RELOADFUNCTIONS = 1
 
 class Script:
     def Load(self, sr, prefix):
-        raise Exception("Virtual Method!")
+        pass
     
     def Save(self, sr, prefix):
-        raise Exception("Virtual Method!")
+        sr.set(prefix + ":DATA", "")
         
     def GetName(self):
         raise Exception("Virtual Method!")

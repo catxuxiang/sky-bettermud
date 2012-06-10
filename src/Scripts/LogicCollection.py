@@ -40,17 +40,15 @@ class LogicCollection:
     
     def Load(self, sr, prefix, p_id):
         prefix += ":LOGICS"
-        print(prefix)
         for i in sr.hkeys(prefix):
             self.Add(i, p_id)
             c = self.Get(i)
-            c.Load(sr.hget(prefix, i))
+            #c.Load(sr.hget(prefix, i))
             
     def Save(self, sr, prefix):
         prefix += ":LOGICS"
-        sr.ltrim(prefix, 2, 1)
         for i in self.m_collection:
             item = self.m_collection[i]
             if item.CanSave():
-                sr.rpush(prefix. item.GetName())
-                item.Save(sr, prefix)
+                sr.hset(prefix, item.GetName(), "")
+                #item.Save(sr, prefix)

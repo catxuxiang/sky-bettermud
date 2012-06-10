@@ -24,8 +24,6 @@ class portalentry:
         sr.set(prefix + ":DESTROOM", self.destinationroom)
 
 class Portal(LogicEntity, DataEntity, HasRegion):
-    region = None
-    room = None
     def __init__(self):
         LogicEntity.__init__(self)
         DataEntity.__init__(self)
@@ -34,55 +32,55 @@ class Portal(LogicEntity, DataEntity, HasRegion):
         self.m_portals = []
         
     def Load(self, sr, prefix):
-        self.Remove()
+        #self.Remove()
         
         self.m_region = sr.get(prefix + ":REGION")
         self.m_name = sr.get(prefix + ":NAME")
         self.m_description = sr.get(prefix + ":DESCRIPTION")
         
         self.m_portals = []
-        for i in range(sr.llen(prefix + ":ENTRIES")):
-            data = sr.lindex(prefix + ":ENTRIES", i)
+        for i in range(sr.llen(prefix + ":ENTRY")):
+            data = sr.lindex(prefix + ":ENTRY", i)
             e = portalentry()
-            e.Load(sr, prefix + ":" + data)
+            e.Load(sr, prefix + ":ENTRY:" + data)
             self.m_portals.append(e)
             
         self.m_attributes.Load(sr, prefix)
         
         self.m_logic.Load(sr, prefix, self.m_id)
         
-        self.Add()
+        #self.Add()
         
     def Save(self, sr, prefix):
         sr.set(prefix + ":REGION", self.m_region)
         sr.set(prefix + ":NAME", self.m_name)
         sr.set(prefix + ":DESCRIPTION", self.m_description)
         
-        sr.ltrim(prefix + ":ENTRIES", 2, 1)
+        sr.ltrim(prefix + ":ENTRY", 2, 1)
         i = 0
         for portal in self.m_portals:
-            sr.rpush(prefix + ":ENTRIES", i)
-            portal.Save(sr, prefix + ":ENTRIES:" + i)
+            sr.rpush(prefix + ":ENTRY", i)
+            portal.Save(sr, prefix + ":ENTRY:" + str(i))
             i += 1
             
         self.m_attributes.Save(sr, prefix)
         
         self.m_logic.Save(sr, prefix)
         
-    def Remove(self):
+    def Remove(self, region, room):
         if self.m_region != "0":
-            reg = Portal.region(self.m_region)
+            reg = region(self.m_region)
             reg.DelPortal(self.m_id)
             
         for i in self.m_portals:
-            r = Portal.room(i.startroom)
+            r = room(i.startroom)
             r.DelPortal(self.m_id)
             
-    def Add(self):
+    def Add(self, region, room):
         if self.m_region != "0":
-            reg = Portal.region(self.m_region)
+            reg = region(self.m_region)
             reg.AddPortal(self.m_id)
             
         for i in self.m_portals:
-            r = Portal.room(i.startroom)
+            r = room(i.startroom)
             r.AddPortal(self.m_id)

@@ -12,11 +12,9 @@ from Db.AccountDatabase import AccountDB
 from Db.RegionDatabase import RegionDB
 from Db.CommandDatabase import CommandDB
 from Db.LogicDatabase import LogicDB
+from Db.PortalDatabase import PortalDB
 from Db.AccountDatabase import AccountDatabase
 from Entities.Character import Character
-from Entities.Item import Item
-from Entities.Room import Room
-from Entities.Portal import Portal
 from BasicLib.BasicLibTime import Timer
 from BasicLib.Redis import sr
 from accessors.CharacterAccessor import character
@@ -24,7 +22,8 @@ from accessors.ItemAccessor import item
 from accessors.RoomAccessor import room
 from accessors.PortalAccessor import portal
 from accessors.RegionAccessor import region
-from Scripts.CPPCommands import CPPCommandReloadScript, SetGameInstance
+from Scripts.CPPCommand import CPPCommand
+from Scripts.CPPCommands import CPPCommandReloadScript
 
 
 class Game:
@@ -32,6 +31,7 @@ class Game:
         self.m_running = True
         self.m_gametime = Timer()
         self.m_players = []
+        self.m_characters = []
         self.m_timerregistry = []
         
     def DoJoinQuantities(self, p_e, p_id):
@@ -160,13 +160,13 @@ class Game:
             
     def ActionRoomCharacters(self, p_action, p_room):
         r = room(p_room)
-        for i in r.m_characters:
+        for i in r.m_room.m_characters:
             c = character(i)
             c.DoAction(p_action)        
     
     def ActionRoomItems(self, p_action, p_room):
         r = room(p_room)
-        for data in r.m_items:
+        for data in r.m_room.m_items:
             i = item(data)
             i.DoAction(p_action)
             
@@ -290,12 +290,16 @@ class Game:
         oldroom = room(c.GetRoom())
     
         # make sure that character can enter portal from current room
-        data = p.SeekStartRoom(c.GetRoom())
-        if data == None:
+        exist = False
+        for i in p.m_portal.m_portals:
+            if i.startroom == c.GetRoom():
+                exist = True
+                break
+        if exist == False:
             raise Exception("Character " + c.GetName() + " tried entering portal " + p.GetName() + " but has no exit from room " + c.GetRoom().GetName())
     
         # get the destination room
-        newroom = room(data.destinationroom)
+        newroom = room(i.destinationroom)
         changeregion = oldroom.GetRegion() != newroom.GetRegion()
         oldreg = region(oldroom.GetRegion())
         newreg = region(newroom.GetRegion())
@@ -790,29 +794,26 @@ class Game:
         LogicDB.Load()
     
         # load the regions
-        
-        CharacterDB.LoadPlayers()
-        
-        Character.CommandDB = CommandDB
         Character.ItemDB = ItemDB
+        Character.CommandDB = CommandDB        
+        RegionDB.LoadAll() 
+        CharacterDB.LoadPlayers() 
+        
         CPPCommandReloadScript.CommandDB = CommandDB
-        Character.room = room
-        Item.character = character
-        Item.room = room
-        Portal.room = room
+        TimedAction.region = region 
         TimedAction.character = character
         TimedAction.item = item
         TimedAction.room = room
         TimedAction.portal = portal
-        
-        Portal.region = region
-        Room.region = region
-        RegionDB.LoadAll() 
-        
-        
-        Item.region = region  
-        TimedAction.region = region 
-        Character.region = region 
+
+        for i in RoomDB.m_container.values():
+            i.Add(region)
+        for i in PortalDB.m_container.values():
+            i.Add(region, room)
+        for i in CharacterDB.m_instances.m_container.values():
+            i.Add(region, room)
+        for i in ItemDB.m_instances.m_container.values():
+            i.Add(character, region, room)
     
         self.LoadTimers()
     
@@ -831,7 +832,7 @@ class Game:
     def ReloadLogicScript(self, p_name, p_mode):
         LogicDB.Reload("data.logics." + p_name, p_mode)
     
-    def SaveTimers(self, sr):
+    def SaveTimers(self):
         sr.set("timers:GAMETIME", self.GetTime())
         sr.ltrim("timers:GAMETIME:REGISTRY", 2, 1)
         index = 0
@@ -902,5 +903,5 @@ class Game:
         p_action.Hook()
                 
 g_game = Game()
-SetGameInstance(g_game)
+CPPCommand.g_game = g_game
 AccountDatabase.g_game = g_game

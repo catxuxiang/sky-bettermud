@@ -9,7 +9,7 @@ class Logic(Script):
         raise Exception("Virtual Method!")
 
     def CanSave(self):
-        raise Exception("Virtual Method!")
+        return True
     
     def GetAttribute(self, p_attr):
         raise Exception("Virtual Method!")
