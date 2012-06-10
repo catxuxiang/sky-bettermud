@@ -16,11 +16,11 @@ class glarepie( data.logics.logic.logic ):
     def Run( self, action, arg1, arg2, arg3, arg4, data ):
         if action == "getitem":
             item = item( arg2 )
-            print item.TemplateID()
-            print "lies"
-            if item.TemplateID() == 2:
-                print "pies"
+            print(item.GetTemplateId())
+            print("lies")
+            if item.GetTemplateId() == "2":
+                print("pies")
                 self.mud.AddActionAbsolute( 0, "attemptsay", self.me, 0, 0, 0, "Hey!!!! Thos-a Pies aren't-a FREE!" )
-                print "cries"
+                print("cries")
 
         return 0

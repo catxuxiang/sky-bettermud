@@ -6,6 +6,7 @@ Created on 2012-6-3
 from accessors.CharacterAccessor import character
 from Scripts.Command import Command
 class CPPCommand(Command):
+    g_game = None
     def __init__(self, p_character, p_name, p_usage, p_description):
         self.m_character = character(p_character)
         self.m_name = p_name

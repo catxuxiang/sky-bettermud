@@ -100,14 +100,15 @@ class TelnetReporter(Logic):
         
         string = "<#FF00FF>Exits: <$reset>"
         
-        for i in r.m_portals:
+        for i in r.m_room.m_portals:
             p = portal(i)
-            p = p.SeekStartRoom(p_id)
-            
-            string += p.directionname
-            string += " - "
-            string += p.GetName()
-            string += "<#FF00FF>, <$reset>"
+            for j in p.m_portal.m_portals:
+                if j.startroom == p_id:
+                    string += j.directionname
+                    string += " - "
+                    string += room(j.destinationroom).GetName()
+                    string += "<#FF00FF>, <$reset>"
+
         string = string[0:len(string) - 19]
         self.SendString(string)
         
@@ -117,7 +118,7 @@ class TelnetReporter(Logic):
             return
         
         string = "<#FFFF00>People: <$reset>"
-        for i in r.m_characters:
+        for i in r.m_room.m_characters:
             c = character(i)
             string += c.GetName()
             string += "<#FFFF00>, <$reset>"
@@ -130,7 +131,7 @@ class TelnetReporter(Logic):
             return
         
         string = "<#00FF00>Items: <$reset>"
-        for data in r.m_items:
+        for data in r.m_room.m_items:
             i = item(data)
             string += i.GetName()
             string += "<#00FF00>, <$reset>"

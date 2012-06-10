@@ -5,6 +5,7 @@ Created on 2012-6-3
 '''
 import os
 import sys
+import inspect
 from Scripts.PythonObject import PythonObject
 from Scripts.Script import SCRIPTRELOADMODE_LEAVEEXISTING
 from BasicLib.Redis import sr
@@ -20,7 +21,24 @@ class PythonCallable:
         return self.m_module.Get()
     
     def Call(self, p_name, p_arg1 = "", p_arg2 = "0", p_arg3 = "0", p_arg4 = "0", p_arg5 = "0", p_arg6 = ""):
-        return getattr(self.m_module.m_object, p_name)(p_arg1, p_arg2, p_arg3, p_arg4, p_arg5, p_arg6)
+        method = getattr(self.m_module.m_object, p_name)
+        num = len(inspect.getargspec(method).args)
+        if inspect.getargspec(method).args[0] == "self":
+            num -= 1
+        if num == 0:
+            return method()
+        elif  num == 1:
+            return method(p_arg1)
+        elif  num == 2:
+            return method(p_arg1, p_arg2)
+        elif  num == 3:
+            return method(p_arg1, p_arg2, p_arg3)
+        elif  num == 4:
+            return method(p_arg1, p_arg2, p_arg3, p_arg4)
+        elif  num == 5:
+            return method(p_arg1, p_arg2, p_arg3, p_arg4, p_arg5)
+        elif  num == 6:
+            return method(p_arg1, p_arg2, p_arg3, p_arg4, p_arg5, p_arg6)
     
 class PythonModule(PythonCallable):
     def __init__(self):
@@ -65,12 +83,12 @@ class PythonModule(PythonCallable):
             i.Reload()
     
     def SpawnNew(self, p_str):
-        c = PythonObject(getattr(self.m_module, p_str))
+        c = PythonObject(getattr(self.m_module.m_object, p_str))
         if c.Get() == None:
             raise Exception("Could not find python class: " + p_str)
         
         i = PythonObject(c.Get()())
-        if i.get() == None:
+        if i.Get() == None:
             raise Exception("Could not create python class instance: " + p_str)
         
         mod = PythonInstance(i, self)
@@ -111,8 +129,8 @@ class PythonInstance(PythonCallable):
         
         setattr(self.m_module.Get(), "__class__", cls.Get())
         
-    def Load(self, data):
-        self.Call("LoadScript", data)
+    def Load(self, sr, prefix):
+        self.Call("LoadScript", sr.get(prefix + ":DATA"))
         
     def Save(self, sr, prefix):
         sr.set(prefix + ":DATA", self.Call("SaveScript"))

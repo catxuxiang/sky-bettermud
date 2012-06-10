@@ -8,10 +8,7 @@ from Entities.Action import Action
 from BasicLib.BasicLibString import ParseWord
 from Scripts.Script import SCRIPTRELOADMODE_LEAVEEXISTING, SCRIPTRELOADMODE_RELOADFUNCTIONS
 from accessors.RoomAccessor import room
-
-g_game = None
-def SetGameInstance(game):
-    g_game = game
+from accessors.PortalAccessor import portal
 
 class CPPCommandQuit(CPPCommand):
     def __init__(self, p_character):
@@ -29,7 +26,7 @@ class CPPCommandChat(CPPCommand):
         if len(p_parameters) == 0:
             self.m_character.DoAction("error", "0", "0", "0", "0", "Usage: " + self.GetUsage())
             return
-        g_game.AddActionAbsolute(0, "chat", self.m_character.GetId(), "0", "0", "0", p_parameters)
+        CPPCommand.g_game.AddActionAbsolute(0, "chat", self.m_character.GetId(), "0", "0", "0", p_parameters)
             
 class CPPCommandSay(CPPCommand):
     def __init__(self, p_character):
@@ -39,7 +36,7 @@ class CPPCommandSay(CPPCommand):
         if len(p_parameters) == 0:
             self.m_character.DoAction("error", "0", "0", "0", "0", "Usage: " + self.GetUsage())
             return
-        g_game.AddActionAbsolute(0, "attemptsay", self.m_character.GetId(), "0", "0", "0", p_parameters)
+        CPPCommand.g_game.AddActionAbsolute(0, "attemptsay", self.m_character.GetId(), "0", "0", "0", p_parameters)
             
 class CPPCommandKick(CPPCommand):
     def __init__(self, p_character):
@@ -50,7 +47,7 @@ class CPPCommandKick(CPPCommand):
             self.m_character.DoAction("error", "0", "0", "0", "0", "Usage: " + self.GetUsage())
             return
         c = None
-        for i in g_game.m_players:
+        for i in CPPCommand.g_game.m_players:
             if i.GetName().lower() == p_parameters.lower().strip():
                 c = i
                 break
@@ -58,7 +55,7 @@ class CPPCommandKick(CPPCommand):
             self.m_character.DoAction("error", "0", "0", "0", "0", "Cannot find user " + p_parameters)
             return
         
-        g_game.AddActionAbsolute(0, "announce", "0", "0", "0", "0", c.GetName() + " has been kicked")
+        CPPCommand.g_game.AddActionAbsolute(0, "announce", "0", "0", "0", "0", c.GetName() + " has been kicked")
         c.DoAction("hangup")
 
 class CPPCommandQuiet(CPPCommand):
@@ -81,10 +78,10 @@ class CPPCommandShutdown(CPPCommand):
         
     def Execute(self, p_parameters):
         if len(p_parameters) != 0:
-            g_game.DoAction("announce", "0", "0", "0", "0", "The Server is shutting down: " + p_parameters)
+            CPPCommand.g_game.DoAction("announce", "0", "0", "0", "0", "The Server is shutting down: " + p_parameters)
         else:
-            g_game.DoAction( "announce", "0", "0", "0", "0", "The Server is shutting down" )
-        g_game.ShutDown()
+            CPPCommand.g_game.DoAction( "announce", "0", "0", "0", "0", "The Server is shutting down" )
+        CPPCommand.g_game.ShutDown()
         
 class CPPCommandLook(CPPCommand):
     def __init__(self, p_character):
@@ -103,12 +100,12 @@ class CPPCommandGo(CPPCommand):
             return
         
         r = room(self.m_character.GetRoom())
-        r.SeekPortal(p_parameters)
-        if not r.IsValidPortal():
-            self.m_character.DoAction("error", "0", "0", "0", "0", "You don't see that exit here!")
-            return
-
-        g_game.AddActionAbsolute(0, "attemptenterportal", self.m_character.GetId(), r.GetCurrentPortal())
+        for i in r.m_room.m_portals:
+            for j in portal(i).m_portal.m_portals:
+                if j.directionname.lower() == p_parameters.lower().strip() and j.startroom == self.m_character.GetRoom():
+                    CPPCommand.g_game.AddActionAbsolute(0, "attemptenterportal", self.m_character.GetId(), i)
+                    return
+        self.m_character.DoAction("error", "0", "0", "0", "0", "You don't see that exit here!")
 
 class CPPCommandCommands(CPPCommand):
     def __init__(self, p_character):

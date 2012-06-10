@@ -1,8 +1,6 @@
 class B:
-    pass
-
-b = B()
-print(type(b) == B)
+    def BB(self, a, b):
+        pass
 
 def AA(x, y, z):
     print(x + y + z)

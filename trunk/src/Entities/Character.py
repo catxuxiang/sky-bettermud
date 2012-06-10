@@ -37,8 +37,6 @@ class CharacterTemplate(Entity, DataEntity):
 class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasItems):
     CommandDB = None
     ItemDB = None
-    region = None
-    room = None
     def __init__(self):
         LogicEntity.__init__(self)
         DataEntity.__init__(self)
@@ -70,8 +68,8 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
             self.AddLogic(i)
             
     def Load(self, sr, prefix):
-        if (not self.IsPlayer()) or self.IsLoggedIn():
-            self.Remove()
+        #if (not self.IsPlayer()) or self.IsLoggedIn():
+        #    self.Remove()
             
         self.m_name = sr.get(prefix + ":NAME")
         self.m_description = sr.get(prefix + ":DESCRIPTION")
@@ -113,8 +111,8 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
             item.SetId(id1)
             Character.ItemDB.LoadEntity(item, prefix + ":ITEMS:" + id1);
             
-        if (not self.IsPlayer()) or self.IsLoggedIn():
-            self.Add()
+        #if (not self.IsPlayer()) or self.IsLoggedIn():
+        #    self.Add()
             
     def Save(self, sr, prefix):
         sr.set(prefix + ":NAME", self.m_name)
@@ -183,19 +181,19 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
         else:
             return False
         
-    def Add(self):
-        reg = Character.region(self.m_region)
+    def Add(self, region, room):
+        reg = region(self.m_region)
         reg.AddCharacter(self.m_id)
         
-        r = Character.room(self.m_room)
+        r = room(self.m_room)
         r.AddCharacter(self.m_id)
         
-    def Remove(self):
+    def Remove(self, region, room):
         if self.m_region != "0" and self.m_room != "0":
-            reg = Character.region(self.m_region)
+            reg = region(self.m_region)
             reg.DelCharacter(self.m_id)
             
-            r = Character.room(self.m_room)
+            r = room(self.m_room)
             r.DelCharacter(self.m_id)
             
     def GetAccount(self):

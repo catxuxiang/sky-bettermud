@@ -190,7 +190,7 @@ class character:
         return self.m_character.IsPlayer()
     
     def Verbose(self):
-        return self.m_character.Verbose()
+        return self.m_character.GetVerbose()
     
     def GetAccount(self):
         return self.m_character.GetAccount()

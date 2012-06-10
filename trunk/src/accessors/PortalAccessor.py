@@ -99,10 +99,9 @@ class portal:
         
     def ClearLogicHooks(self, p_logic):
         self.m_portal.ClearLogicHooks(p_logic)
-        
+'''        
     def SeekStartRoom(self, p_room):
-        for id1 in self.m_portal.m_portals:
-            i = PortalDB.Get(id1)
+        for i in self.m_portal.m_portals:
             if i.startroom == p_room:
                 return i
         return None
@@ -113,6 +112,7 @@ class portal:
             if i.destinationroom == p_room:
                 return i
         return None
+'''
 
         
     

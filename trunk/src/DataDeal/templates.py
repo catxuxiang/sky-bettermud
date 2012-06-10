@@ -579,6 +579,19 @@ def AddCommandsDetail():
     sr.rpush("commands", "../data/commands/directions.py")
     sr.rpush("commands", "../data/commands/admincommands.py")
     sr.rpush("commands", "../data/commands/spells.py")
+    
+def AddLogicsDetail():
+    sr.rpush("logics", "../data/logics/characters/pielogic.py")
+    sr.rpush("logics", "../data/logics/characters/testing.py")
+    sr.rpush("logics", "../data/logics/characters/itemstuff.py")
+    sr.rpush("logics", "../data/logics/characters/bettertonstores.py")
+    sr.rpush("logics", "../data/logics/characters/currency.py")
+    sr.rpush("logics", "../data/logics/characters/combat.py")
+    sr.rpush("logics", "../data/logics/items/basicitems.py")
+    sr.rpush("logics", "../data/logics/items/spellitems.py")
+    sr.rpush("logics", "../data/logics/regions/noelves.py")
+    sr.rpush("logics", "../data/logics/rooms/pieroom.py")
+
 
 #CreateCharactersList()
 #AddCharactersDetail()
@@ -591,4 +604,5 @@ def AddCommandsDetail():
 #AddRegionPortalsDetail()
 #AddRegionRoomsDetail()
 #AddCommandsDetail()
+AddLogicsDetail()
 
