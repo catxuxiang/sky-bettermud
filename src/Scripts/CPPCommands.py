@@ -116,7 +116,7 @@ class CPPCommandCommands(CPPCommand):
         self.m_character.DoAction("announce", "0", "0", "0", "0", "<#FFFFFF> Command                          | Usage" )
         self.m_character.DoAction("announce", "0", "0", "0", "0", "<#FFFFFF>-------------------------------------------------------------------------------")
 
-        for i in self.m_character.m_commands:
+        for i in self.m_character.m_character.m_commands:
             self.m_character.DoAction("announce", "0", "0", "0", "0", "<$reset> " + i.GetName() + "| " + i.GetUsage())
 
 class CPPCommandReloadScript(CPPCommand):

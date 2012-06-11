@@ -54,8 +54,8 @@ class character:
             self.m_character = p_data.m_character
             self.m_character.AddRef()
             
-    def __del__(self):
-        self.m_character.DelRef()
+    #def __del__(self):
+    #    self.m_character.DelRef()
         
     def GetId(self):
         return self.m_character.GetId()

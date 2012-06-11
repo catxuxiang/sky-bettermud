@@ -21,7 +21,7 @@ def gettemplateid( option ):
 def setup( id ):
     c = character( id )
     a = account( c.GetAccount() )
-    l = a.AccessLevel();
+    l = a.GetAccessLevel();
 
 
 
@@ -82,8 +82,8 @@ def setup( id ):
         c.AddCommand( "savedatabase" )
 
 
-    c.SetRoom( 1 )
-    c.SetRegion( 1 )
+    c.SetRoom( "1" )
+    c.SetRegion( "1" )
 
 
 
