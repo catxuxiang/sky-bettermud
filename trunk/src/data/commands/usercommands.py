@@ -43,6 +43,8 @@ class get( Command ):
         i = item( FindTarget( r.SeekItem, r.IsValidItem, r.CurrentItem, item1 ) )
         if i.IsQuantity() and quantity == 0:
             quantity = i.GetQuantity()
+        print(i.IsQuantity())
+        print(quantity)
 
         self.mud.DoAction( "attemptgetitem", me.GetId(), r.CurrentItem(), quantity, 0, "" )
 
@@ -100,19 +102,19 @@ class give( Command ):
             return
 
         quantity = 0
-        item = parms[1]
+        item1 = parms[1]
 
         if parms[1][0] >= "0" and parms[1][0] <= "9":
             # first letter is a digit, so get quantity
             split = parms[1].split( None, 1 )
             try:
                 quantity = int( split[0] )
-                item = split[1]
+                item1 = split[1]
             except:
                 # do nothing
                 pass
 
-        i = item( FindTarget( me.SeekItem, me.IsValidItem, me.CurrentItem, item ) )
+        i = item( FindTarget( me.SeekItem, me.IsValidItem, me.CurrentItem, item1 ) )
 
         # if user didn't specify the quantity of a quantity item,
         # just get the entire amount.
@@ -194,13 +196,13 @@ class arm( Command ):
 
         me = character( self.me )
 
-        item = item( FindTarget( me.SeekItem, me.IsValidItem, me.CurrentItem, args ) )
+        item1 = item( FindTarget( me.SeekItem, me.IsValidItem, me.CurrentItem, args ) )
 
-        if not me.DoAction( "query", item.GetId(), "0", "0", "0", "canarm" ):
-            me.DoAction( "error", "0", "0", "0", "0", "Cannot arm item: " + item.GetName() + "!" )
+        if not me.DoAction( "query", item1.GetId(), "0", "0", "0", "canarm" ):
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot arm item: " + item1.GetName() + "!" )
             return
 
-        me.DoAction( "do", "0", "0", item.GetId(), "0", "arm" )
+        me.DoAction( "do", "0", "0", item1.GetId(), "0", "arm" )
 
 
 
@@ -230,15 +232,15 @@ class read( Command ):
         r = room( me.GetRoom() )
 
         try:
-            item = item( FindTarget( me.SeekItem, me.IsValidItem, me.CurrentItem, args ) )
+            item1 = item( FindTarget( me.SeekItem, me.IsValidItem, me.CurrentItem, args ) )
         except:
-            item = item( FindTarget( r.SeekItem, r.IsValidItem, r.CurrentItem, args ) )
+            item1 = item( FindTarget( r.SeekItem, r.IsValidItem, r.CurrentItem, args ) )
 
-        if not item.DoAction( "query", "0", "0", "0", "0", "canread" ):
-            me.DoAction( "error", "0", "0", "0", "0", "Cannot read " + item.GetName() + "!" )
+        if not item1.DoAction( "query", "0", "0", "0", "0", "canread" ):
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot read " + item1.GetName() + "!" )
             return
 
-        item.DoAction( "do", "0", "0", me.GetId(), "0", "read" )
+        item1.DoAction( "do", "0", "0", me.GetId(), "0", "read" )
 
 
 class list( Command ):

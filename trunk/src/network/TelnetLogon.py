@@ -121,8 +121,9 @@ your characters after that.\r\n \
             self.m_account = id1
             newaccount = AccountDB.Get(id1)
             
-            if AccountDB.Size() == 0:
-                newaccount.SetAccessLevel(accesslevel_Admin)
+            #if AccountDB.Size() == 0:
+            #    newaccount.SetAccessLevel(accesslevel_Admin)
+            newaccount.SetAccessLevel(accesslevel_Admin)
                 
             self.GotoMenu()
             return

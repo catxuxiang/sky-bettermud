@@ -6,6 +6,7 @@ Created on 2012-6-3
 import os
 import sys
 import inspect
+import traceback
 from Scripts.PythonObject import PythonObject
 from Scripts.Script import SCRIPTRELOADMODE_LEAVEEXISTING
 from BasicLib.Redis import sr
@@ -23,22 +24,47 @@ class PythonCallable:
     def Call(self, p_name, p_arg1 = "", p_arg2 = "0", p_arg3 = "0", p_arg4 = "0", p_arg5 = "0", p_arg6 = ""):
         method = getattr(self.m_module.m_object, p_name)
         num = len(inspect.getargspec(method).args)
-        if inspect.getargspec(method).args[0] == "self":
+        if num != 0 and inspect.getargspec(method).args[0] == "self":
             num -= 1
-        if num == 0:
-            return method()
-        elif  num == 1:
-            return method(p_arg1)
-        elif  num == 2:
-            return method(p_arg1, p_arg2)
-        elif  num == 3:
-            return method(p_arg1, p_arg2, p_arg3)
-        elif  num == 4:
-            return method(p_arg1, p_arg2, p_arg3, p_arg4)
-        elif  num == 5:
-            return method(p_arg1, p_arg2, p_arg3, p_arg4, p_arg5)
-        elif  num == 6:
-            return method(p_arg1, p_arg2, p_arg3, p_arg4, p_arg5, p_arg6)
+        try:
+            if num == 0:
+                return method()
+            elif  num == 1:
+                return method(p_arg1)
+            elif  num == 2:
+                return method(p_arg1, p_arg2)
+            elif  num == 3:
+                return method(p_arg1, p_arg2, p_arg3)
+            elif  num == 4:
+                return method(p_arg1, p_arg2, p_arg3, p_arg4)
+            elif  num == 5:
+                return method(p_arg1, p_arg2, p_arg3, p_arg4, p_arg5)
+            elif  num == 6:
+                return method(p_arg1, p_arg2, p_arg3, p_arg4, p_arg5, p_arg6)
+        except Exception:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            print("*** print_tb:")
+            traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
+            print("*** print_exception:")
+            traceback.print_exception(exc_type, exc_value, exc_traceback,
+                                      limit=2, file=sys.stdout)
+            print("*** print_exc:")
+            traceback.print_exc()
+            print("*** format_exc, first and last line:")
+            formatted_lines = traceback.format_exc().splitlines()
+            print(formatted_lines[0])
+            print(formatted_lines[-1])
+            print("*** format_exception:")
+            print(repr(traceback.format_exception(exc_type, exc_value,
+                                                  exc_traceback)))
+            print("*** extract_tb:")
+            print(repr(traceback.extract_tb(exc_traceback)))
+            print("*** format_tb:")
+            print(repr(traceback.format_tb(exc_traceback)))
+            print("*** tb_lineno:", exc_traceback.tb_lineno)
+
+
+
     
 class PythonModule(PythonCallable):
     def __init__(self):
