@@ -1,6 +1,6 @@
-from accessors.CharacterAccessor import character, charactertemplate
-from accessors.ItemAccessor import item, itemtemplate
 from accessors.GameAccessor import GameWrap
+from accessors.ItemAccessor import item, itemtemplate
+from accessors.CharacterAccessor import character, charactertemplate
 
 def init():
     mud = GameWrap()
@@ -9,7 +9,7 @@ def init():
     mud.BeginItem()
     while mud.IsValidItem():
         item = item( mud.CurrentItem() )
-        template = itemtemplate( item.TemplateID() )
+        template = itemtemplate( item.GetTemplateId() )
         if not item.HasAttribute( "weight" ):
             item.AddAttribute( "weight", template.GetAttribute( "weight" ) )
         mud.NextItem()
@@ -18,7 +18,7 @@ def init():
     mud.BeginCharacter()
     while mud.IsValidCharacter():
         character = character( mud.CurrentCharacter() )
-        template = charactertemplate( character.TemplateID() )
+        template = charactertemplate( character.GetTemplateId() )
         if not character.HasAttribute( "encumbrance" ):
             character.AddAttribute( "encumbrance", template.GetAttribute( "encumbrance" ) )
         if not character.HasAttribute( "maxencumbrance" ):

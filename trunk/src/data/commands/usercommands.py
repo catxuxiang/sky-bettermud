@@ -1,8 +1,9 @@
 from data.commands.PythonCommand import Command, UsageError, FindTarget
 from accessors.CharacterAccessor import character
 from accessors.RoomAccessor import room
-from accessors.ItemAccessor import itemtemplate
-from accessors.ItemAccessor import item
+from accessors.ItemAccessor import itemtemplate, item
+from accessors.CharacterAccessor import charactertemplate
+from accessors.RegionAccessor import region
 
 class announce( Command ):
     name = "announce"
@@ -12,7 +13,7 @@ class announce( Command ):
     def Run( self, args ):
         if not args: raise UsageError
         me = character( self.me )
-        self.mud.AddActionAbsolute( 0, "announce", 0, 0, 0, 0, "Announcement by " + me.Name() + ": " + args )
+        self.mud.AddActionAbsolute( 0, "announce", "0", "0", "0", "0", "Announcement by " + me.GetName() + ": " + args )
 
 
 
@@ -24,7 +25,7 @@ class get( Command ):
     def Run( self, args ):
         if not args: raise UsageError
         me = character( self.me )
-        r = room( me.Room() )
+        r = room( me.GetRoom() )
 
         quantity = 0
         item = args
@@ -43,7 +44,7 @@ class get( Command ):
         if i.IsQuantity() and quantity == 0:
             quantity = i.GetQuantity()
 
-        self.mud.DoAction( "attemptgetitem", me.ID(), r.CurrentItem(), quantity, 0, "" )
+        self.mud.DoAction( "attemptgetitem", me.GetId(), r.CurrentItem(), quantity, 0, "" )
 
 
 class drop( Command ):
@@ -76,7 +77,7 @@ class drop( Command ):
         if i.IsQuantity() and quantity == 0:
             quantity = i.GetQuantity()
 
-        self.mud.DoAction( "attemptdropitem", me.ID(), me.CurrentItem(), quantity, 0, "" )
+        self.mud.DoAction( "attemptdropitem", me.GetId(), me.CurrentItem(), quantity, 0, "" )
 
 
 class give( Command ):
@@ -90,18 +91,18 @@ class give( Command ):
         if len(parms) < 2: raise UsageError
 
         me = character( self.me )
-        r = room( me.Room() )
+        r = room( me.GetRoom() )
 
 
         recipient = FindTarget( r.SeekCharacter, r.IsValidCharacter, r.CurrentCharacter, parms[0] )
-        if recipient == me.ID():
-            me.DoAction( "error", 0, 0, 0, 0, "You can't give yourself an object!" )
+        if recipient == me.GetId():
+            me.DoAction( "error", "0", "0", "0", "0", "You can't give yourself an object!" )
             return
 
         quantity = 0
         item = parms[1]
 
-        if args[0] >= "0" and args[0] <= "9":
+        if parms[1][0] >= "0" and parms[1][0] <= "9":
             # first letter is a digit, so get quantity
             split = parms[1].split( None, 1 )
             try:
@@ -118,7 +119,7 @@ class give( Command ):
         if i.IsQuantity() and quantity == 0:
             quantity = i.GetQuantity()
 
-        self.mud.DoAction( "attemptgiveitem", me.ID(), r.CurrentCharacter(), me.CurrentItem(), quantity, "" )
+        self.mud.DoAction( "attemptgiveitem", me.GetId(), r.CurrentCharacter(), me.CurrentItem(), quantity, "" )
 
 
 
@@ -135,15 +136,15 @@ class receive( Command ):
         if args == "on":
             if me.HasLogic( "cantreceiveitems" ):
                 me.DelLogic( "cantreceiveitems" )
-                me.DoAction( "announce", 0, 0, 0, 0, "Receiving mode is now ON" )
+                me.DoAction( "announce", "0", "0", "0", "0", "Receiving mode is now ON" )
             else:
-                me.DoAction( "error", 0, 0, 0, 0, "You are already in receiving mode!" )
+                me.DoAction( "error", "0", "0", "0", "0", "You are already in receiving mode!" )
         else:
             if not me.HasLogic( "cantreceiveitems" ):
                 me.AddLogic( "cantreceiveitems" )
-                me.DoAction( "announce", 0, 0, 0, 0, "Receiving mode is now OFF" )
+                me.DoAction( "announce", "0", "0", "0", "0", "Receiving mode is now OFF" )
             else:
-                me.DoAction( "error", 0, 0, 0, 0, "You are already in non-receiving mode!" )
+                me.DoAction( "error", "0", "0", "0", "0", "You are already in non-receiving mode!" )
 
 
 
@@ -164,21 +165,21 @@ class inventory( Command ):
         else:
             me.BeginItem()
             while me.IsValidItem():
-                item = item( me.CurrentItem() )
-                string += item.Name()
+                item1 = item( me.CurrentItem() )
+                string += item1.GetName()
                 string += "<#00FF00>, <$reset>"
                 me.NextItem()
         string += "\r\n<#FFFFFF>--------------------------------------------------------------------------------\r\n"
         string += "<#FFFFFF> Weapon:       <$reset>";
-        if me.GetAttribute( "weapon" ) == 0:
-            item = itemtemplate( me.GetAttribute( "defaultweapon" ) )
+        if me.GetAttribute( "weapon" ) == "0":
+            item1 = itemtemplate( me.GetAttribute( "defaultweapon" ) )
         else:
-            item = item( me.GetAttribute( "weapon" ) )
-        string += item.Name() + "\r\n"
+            item1 = item( me.GetAttribute( "weapon" ) )
+        string += item1.GetName() + "\r\n"
         string += "<#FFFFFF> Total Weight: <$reset>" + str( me.GetAttribute( "encumbrance" ) ) + "\r\n"
         string += "<#FFFFFF> Max Weight:   <$reset>" + str( me.GetAttribute( "maxencumbrance" ) ) + "\r\n"
         string += "<#FFFFFF>--------------------------------------------------------------------------------\r\n"
-        me.DoAction( "announce", 0, 0, 0, 0, string )
+        me.DoAction( "announce", "0", "0", "0", "0", string )
 
 
 
@@ -195,11 +196,11 @@ class arm( Command ):
 
         item = item( FindTarget( me.SeekItem, me.IsValidItem, me.CurrentItem, args ) )
 
-        if not me.DoAction( "query", item.ID(), 0, 0, 0, "canarm" ):
-            me.DoAction( "error", 0, 0, 0, 0, "Cannot arm item: " + item.Name() + "!" )
+        if not me.DoAction( "query", item.GetId(), "0", "0", "0", "canarm" ):
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot arm item: " + item.GetName() + "!" )
             return
 
-        me.DoAction( "do", 0, 0, item.ID(), 0, "arm" )
+        me.DoAction( "do", "0", "0", item.GetId(), "0", "arm" )
 
 
 
@@ -213,7 +214,7 @@ class disarm( Command ):
 
         me = character( self.me )
         if args == "weapon":
-            me.DoAction( "do", 0, 0, 1, 0, "disarm" )
+            me.DoAction( "do", "0", "0", "1", "0", "disarm" )
 
 
 
@@ -226,18 +227,18 @@ class read( Command ):
         if not args: raise UsageError
 
         me = character( self.me )
-        r = room( me.Room() )
+        r = room( me.GetRoom() )
 
         try:
             item = item( FindTarget( me.SeekItem, me.IsValidItem, me.CurrentItem, args ) )
         except:
             item = item( FindTarget( r.SeekItem, r.IsValidItem, r.CurrentItem, args ) )
 
-        if not item.DoAction( "query", 0, 0, 0, 0, "canread" ):
-            me.DoAction( "error", 0, 0, 0, 0, "Cannot read " + item.Name() + "!" )
+        if not item.DoAction( "query", "0", "0", "0", "0", "canread" ):
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot read " + item.GetName() + "!" )
             return
 
-        item.DoAction( "do", 0, 0, me.ID(), 0, "read" )
+        item.DoAction( "do", "0", "0", me.GetId(), "0", "read" )
 
 
 class list( Command ):
@@ -249,9 +250,9 @@ class list( Command ):
         if not args: raise UsageError
 
         me = character( self.me )
-        r = room( me.Room() )
+        r = room( me.GetRoom() )
         m = character( FindTarget( r.SeekCharacter, r.IsValidCharacter, r.CurrentCharacter, args ) )
-        m.DoAction( "do", 0, 0, me.ID(), 0, "list" )
+        m.DoAction( "do", "0", "0", me.GetId(), "0", "list" )
 
 
 class buy( Command ):
@@ -265,10 +266,10 @@ class buy( Command ):
         if len( parms ) < 2: raise UsageError
 
         me = character( self.me )
-        r = room( me.Room() )
+        r = room( me.GetRoom() )
 
         m = character( FindTarget( r.SeekCharacter, r.IsValidCharacter, r.CurrentCharacter, parms[0] ) )
-        m.DoAction( "do", 0, 0, me.ID(), 0, "buy " + parms[1] )
+        m.DoAction( "do", "0", "0", me.GetId(), "0", "buy " + parms[1] )
 
 
 
@@ -282,14 +283,14 @@ class attack( Command ):
         if not args: raise UsageError
 
         me = character( self.me )
-        r = room( me.Room() )
+        r = room( me.GetRoom() )
 
         t = FindTarget( r.SeekCharacter, r.IsValidCharacter, r.CurrentCharacter, args )
         target = character( t )
-        if not target.DoAction( "query", me.ID(), 0, 0, 0, "canattack" ):
+        if not target.DoAction( "query", me.GetId(), "0", "0", "0", "canattack" ):
             return
 
-        me.DoAction( "do", 0, 0, t, 0, "initattack" )
+        me.DoAction( "do", "0", "0", t, "0", "initattack" )
 
 
 class breakattack( Command ):
@@ -299,4 +300,4 @@ class breakattack( Command ):
 
     def Run( self, args ):
         me = character( self.me )
-        me.DoAction( "do", 0, 0, 0, 0, "breakattack" )        
+        me.DoAction( "do", "0", "0", "0", "0", "breakattack" )        

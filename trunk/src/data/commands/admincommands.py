@@ -5,7 +5,6 @@ from accessors.ItemAccessor import itemtemplate
 from accessors.CharacterAccessor import charactertemplate
 from accessors.RegionAccessor import region
 
-
 class visual( Command ):
     name = "visual"
     usage = "\"visual <vision>\""
@@ -14,7 +13,7 @@ class visual( Command ):
     def Run( self, args ):
         if not args: raise UsageError
         me = character( self.me )
-        self.mud.AddActionAbsolute( 0, "vision", me.Room(), 0, 0, 0, args )
+        self.mud.AddActionAbsolute( 0, "vision", me.GetRoom(), "0", "0", "0", args )
 
 
 class addcommand( Command ):
@@ -29,14 +28,14 @@ class addcommand( Command ):
         me = character( self.me )
         id1 = self.mud.FindPlayerPart( parms[0] )
         if not id1:
-            me.DoAction( "error", 0, 0, 0, 0, "Cannot find player: " + parms[0] )
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot find player: " + parms[0] )
             return
         r = character( id1 )
         if not r.AddCommand( parms[1] ):
-            me.DoAction( "error", 0, 0, 0, 0, "Could not add command: " + parms[1] )
+            me.DoAction( "error", "0", "0", "0", "0", "Could not add command: " + parms[1] )
             return
-        me.DoAction( "announce", 0, 0, 0, 0, "Successfully gave " + r.Name() + " command " + parms[1] + "." )
-        r.DoAction( "announce", 0, 0, 0, 0, me.Name() + " gave you a new command: " + parms[1] + "!" )
+        me.DoAction( "announce", "0", "0", "0", "0", "Successfully gave " + r.GetName() + " command " + parms[1] + "." )
+        r.DoAction( "announce", "0", "0", "0", "0", me.GetName() + " gave you a new command: " + parms[1] + "!" )
 
 
 class delcommand( Command ):
@@ -51,14 +50,14 @@ class delcommand( Command ):
         me = character( self.me )
         id1 = self.mud.FindPlayerPart( parms[0] )
         if not id1:
-            me.DoAction( "error", 0, 0, 0, 0, "Cannot find player: " + parms[0] )
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot find player: " + parms[0] )
             return
         t = character( id1 )
         if not t.DelCommand( parms[1] ):
-            me.DoAction( "error", 0, 0, 0, 0, "Could not delete command: " + parms[1] )
+            me.DoAction( "error", "0", "0", "0", "0", "Could not delete command: " + parms[1] )
             return
-        me.DoAction( "announce", 0, 0, 0, 0, "Successfully removed " + t.Name() + "s command " + parms[1] + "." )
-        t.DoAction( "announce", 0, 0, 0, 0, me.Name() + " deleted your command: " + parms[1] + "!" )
+        me.DoAction( "announce", "0", "0", "0", "0", "Successfully removed " + t.GetName() + "s command " + parms[1] + "." )
+        t.DoAction( "announce", "0", "0", "0", "0", me.GetName() + " deleted your command: " + parms[1] + "!" )
 
 
 class emulate( Command ):
@@ -73,10 +72,10 @@ class emulate( Command ):
         me = character( self.me )
         id1 = self.mud.FindPlayerOnlinePart( parms[0] )
         if not id1:
-            me.DoAction( "error", 0, 0, 0, 0, "Cannot find player: " + parms[0] )
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot find player: " + parms[0] )
             return
         c = character( id1 )
-        self.mud.AddActionAbsolute( 0, "command", c.ID(), 0, 0, 0, parms[1] )
+        self.mud.AddActionAbsolute( 0, "command", c.GetId(), "0", "0", "0", parms[1] )
 
 
 class addplayerlogic( Command ):
@@ -91,14 +90,14 @@ class addplayerlogic( Command ):
         me = character( self.me )
         id1 = self.mud.FindPlayerPart( parms[0] )
         if not id1:
-            me.DoAction( "error", 0, 0, 0, 0, "Cannot find player: " + parms[0] )
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot find player: " + parms[0] )
             return
         c = character( id1 )
         if not c.AddLogic( parms[1] ):
-            me.DoAction( "error", 0, 0, 0, 0, "Could not add logic: " + parms[1] )
+            me.DoAction( "error", "0", "0", "0", "0", "Could not add logic: " + parms[1] )
             return
-        me.DoAction( "announce", 0, 0, 0, 0, "Successfully gave " + c.Name() + " logic module " + parms[1] + "." )
-        c.DoAction( "announce", 0, 0, 0, 0, me.Name() + " gave you a new logic module: " + parms[1] + "!" )
+        me.DoAction( "announce", "0", "0", "0", "0", "Successfully gave " + c.GetName() + " logic module " + parms[1] + "." )
+        c.DoAction( "announce", "0", "0", "0", "0", me.GetName() + " gave you a new logic module: " + parms[1] + "!" )
 
 
 class delplayerlogic( Command ):
@@ -114,14 +113,14 @@ class delplayerlogic( Command ):
         me = character( self.me )
 
         if not id1:
-            me.DoAction( "error", 0, 0, 0, 0, "Cannot find player: " + parms[0] )
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot find player: " + parms[0] )
             return
         c = character( id1 )
         if not c.DelLogic( parms[1] ):
-            me.DoAction( "error", 0, 0, 0, 0, "Could not delete logic: " + parms[1] )
+            me.DoAction( "error", "0", "0", "0", "0", "Could not delete logic: " + parms[1] )
             return
-        me.DoAction( "announce", 0, 0, 0, 0, "Successfully removed " + c.Name() + "s logic module " + parms[1] + "." )
-        c.DoAction( "announce", 0, 0, 0, 0, me.Name() + " deleted your logic module: " + parms[1] + "!" )
+        me.DoAction( "announce", "0", "0", "0", "0", "Successfully removed " + c.GetName() + "s logic module " + parms[1] + "." )
+        c.DoAction( "announce", "0", "0", "0", "0", me.GetName() + " deleted your logic module: " + parms[1] + "!" )
 
 
 class pythonexec( Command ):
@@ -133,7 +132,7 @@ class pythonexec( Command ):
         if not args: raise UsageError
         me = character( self.me )
         s = args.replace( "<br>", "\n" )
-        me.DoAction( "announce", 0, 0, 0, 0, "Executing Python Code, check your console window." )
+        me.DoAction( "announce", "0", "0", "0", "0", "Executing Python Code, check your console window." )
         exec( s )
 
 
@@ -146,11 +145,11 @@ class spawnitem( Command ):
         if not args: raise UsageError
 
         me = character( self.me )
-        t = itemtemplate( str( args ) )
-        print(t.GetId())
-        me.DoAction( "announce", 0, 0, 0, 0, "Spawning Item..." )
-        self.mud.DoAction( "spawnitem", t.GetId(), me.GetId(), 1, 0, "" )
-        me.DoAction( "announce", 0, 0, 0, 0, "Success." )
+        t = itemtemplate( args )
+        #print(t.GetId())
+        me.DoAction( "announce", "0", "0", "0", "0", "Spawning Item..." )
+        self.mud.DoAction( "spawnitem", t.GetId(), me.GetId(), "1", "0", "" )
+        me.DoAction( "announce", "0", "0", "0", "0", "Success." )
 
 
 class spawncharacter( Command ):
@@ -161,10 +160,10 @@ class spawncharacter( Command ):
     def Run( self, args ):
         if not args: raise UsageError
         me = character( self.me )
-        t = charactertemplate( str( args ) )
-        me.DoAction( "announce", 0, 0, 0, 0, "Spawning Character..." )
-        self.mud.DoAction( "spawncharacter", t.GetId(), me.Room(), 0, 0, "" )
-        me.DoAction( "announce", 0, 0, 0, 0, "Success." )
+        t = charactertemplate( args )
+        me.DoAction( "announce", "0", "0", "0", "0", "Spawning Character..." )
+        self.mud.DoAction( "spawncharacter", t.GetId(), me.GetRoom(), "0", "0", "" )
+        me.DoAction( "announce", "0", "0", "0", "0", "Success." )
 
 
 class teleport( Command ):
@@ -175,8 +174,8 @@ class teleport( Command ):
     def Run( self, args ):
         if not args: raise UsageError
         me = character( self.me )
-        #oldroom = me.Room()
-        self.mud.DoAction( "attempttransport", me.GetId(), int(args), 0, 0, "" )
+        #oldroom = me.GetRoom()
+        self.mud.DoAction( "attempttransport", me.GetId(), args, "0", "0", "" )
 
 
 class destroyitem( Command ):
@@ -193,17 +192,17 @@ class destroyitem( Command ):
         if me.IsValidItem():
             item = me.CurrentItem()
         else:
-            room = room( me.Room() )
+            room = room( me.GetRoom() )
             room.SeekItem( args )
             if room.IsValidItem():
                 item = room.CurrentItem()
             else:
-                me.DoAction( "error", 0, 0, 0, 0, "Cannot find item: " + args )
+                me.DoAction( "error", "0", "0", "0", "0", "Cannot find item: " + args )
                 return
 
         i = item( item )
-        me.DoAction( "announce", 0, 0, 0, 0, "Destroying Item: " + i.Name() )
-        self.mud.AddActionAbsolute( 0, "destroyitem", item, 0, 0, 0, "" )
+        me.DoAction( "announce", "0", "0", "0", "0", "Destroying Item: " + i.GetName() )
+        self.mud.AddActionAbsolute( 0, "destroyitem", item, "0", "0", "0", "" )
 
 
 class destroycharacter( Command ):
@@ -215,17 +214,17 @@ class destroycharacter( Command ):
         if not args: raise UsageError
 
         me = character( self.me )
-        room = room( me.Room() )
+        room = room( me.GetRoom() )
         room.SeekCharacter( args )
         if room.IsValidCharacter():
             character = room.CurrentCharacter()
         else:
-            me.DoAction( "error", 0, 0, 0, 0, "Cannot find character: " + args )
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot find character: " + args )
             return
 
         c = character( character )
-        me.DoAction( "announce", 0, 0, 0, 0, "Destroying Character: " + c.Name() )
-        self.mud.AddActionAbsolute( 0, "destroycharacter", character, 0, 0, 0, "" )
+        me.DoAction( "announce", "0", "0", "0", "0", "Destroying Character: " + c.GetName() )
+        self.mud.AddActionAbsolute( 0, "destroycharacter", character, "0", "0", "0", "" )
 
 
 class cleanup( Command ):
@@ -235,8 +234,8 @@ class cleanup( Command ):
 
     def Run( self, args ):
         me = character( self.me )
-        me.DoAction( "announce", 0, 0, 0, 0, "Beginning Cleanup" )
-        self.mud.AddActionAbsolute( 0, "cleanup", 0, 0, 0, 0, "" )
+        me.DoAction( "announce", "0", "0", "0", "0", "Beginning Cleanup" )
+        self.mud.AddActionAbsolute( 0, "cleanup", "0", "0", "0", "0", "" )
 
 
 
@@ -251,18 +250,18 @@ class savedatabase( Command ):
         me = character( self.me )
         parms = args.split( None, 1 )
         if parms[0] == "all":
-            me.DoAction( "announce", 0, 0, 0, 0, "Beginning Complete Database Save" )
-            self.mud.AddActionAbsolute( 0, "savedatabases", 0, 0, 0, 0, "" )
+            me.DoAction( "announce", "0", "0", "0", "0", "Beginning Complete Database Save" )
+            self.mud.AddActionAbsolute( 0, "savedatabases", "0", "0", "0", "0", "" )
             return
         if parms[0] == "region":
             if len(parms) < 2: raise UsageError
-            region = region( str(parms[1]) )
-            me.DoAction( "announce", 0, 0, 0, 0, "Beginning Region Database Save: " + region.Name() )
-            self.mud.AddActionAbsolute( 0, "saveregion", str(parms[1]), 0, 0, 0, "" )
+            region = region( parms[1] )
+            me.DoAction( "announce", "0", "0", "0", "0", "Beginning Region Database Save: " + region.GetName() )
+            self.mud.AddActionAbsolute( 0, "saveregion", parms[1], "0", "0", "0", "" )
             return
         if parms[0] == "players":
-            me.DoAction( "announce", 0, 0, 0, 0, "Beginning Player Database Save" )
-            self.mud.AddActionAbsolute( 0, "saveplayers", 0, 0, 0, 0, "" )
+            me.DoAction( "announce", "0", "0", "0", "0", "Beginning Player Database Save" )
+            self.mud.AddActionAbsolute( 0, "saveplayers", "0", "0", "0", "0", "" )
             return
         raise UsageError
 
@@ -281,32 +280,32 @@ class loaddatabase( Command ):
         if len(parms) < 2: raise UsageError
 
         if parms[0] == "items":
-            me.DoAction( "announce", 0, 0, 0, 0, "Beginning Item Template Database Load: " + parms[1] )
-            self.mud.DoAction( "reloaditems", 0, 0, 0, 0, parms[1] )
+            me.DoAction( "announce", "0", "0", "0", "0", "Beginning Item Template Database Load: " + parms[1] )
+            self.mud.DoAction( "reloaditems", "0", "0", "0", "0", parms[1] )
             return
         if parms[0] == "characters":
-            me.DoAction( "announce", 0, 0, 0, 0, "Beginning Character Template Database Load: " + parms[1] )
-            self.mud.DoAction( "reloadcharacters", 0, 0, 0, 0, parms[1] )
+            me.DoAction( "announce", "0", "0", "0", "0", "Beginning Character Template Database Load: " + parms[1] )
+            self.mud.DoAction( "reloadcharacters", "0", "0", "0", "0", parms[1] )
             return
         if parms[0] == "regions":
-            me.DoAction( "announce", 0, 0, 0, 0, "Beginning Region Database Load: " + parms[1] )
-            self.mud.DoAction( "reloadregion", 0, 0, 0, 0, parms[1] )
+            me.DoAction( "announce", "0", "0", "0", "0", "Beginning Region Database Load: " + parms[1] )
+            self.mud.DoAction( "reloadregion", "0", "0", "0", "0", parms[1] )
             return
         if parms[0] == "commands":
             if len(parms) < 3: raise UsageError
             if parms[2] == "keepdata" : mode = 1
             elif parms[2] == "keepall" : mode = 0
             else : raise UsageError
-            me.DoAction( "announce", mode, 0, 0, 0, "Beginning Command Database Load: " + parms[1] )
-            self.mud.DoAction( "reloadcommandscript", mode, 0, 0, 0, parms[1] )
+            me.DoAction( "announce", mode, "0", "0", "0", "Beginning Command Database Load: " + parms[1] )
+            self.mud.DoAction( "reloadcommandscript", mode, "0", "0", "0", parms[1] )
             return
         if parms[0] == "logics":
             if len(parms) < 3: raise UsageError
             if parms[2] == "keepdata" : mode = 1
             elif parms[2] == "keepall" : mode = 0
             else : raise UsageError
-            me.DoAction( "announce", 0, 0, 0, 0, "Beginning Logic Database Load: " + parms[1] )
-            self.mud.DoAction( "reloadlogicscript", mode, 0, 0, 0, parms[1] )
+            me.DoAction( "announce", "0", "0", "0", "0", "Beginning Logic Database Load: " + parms[1] )
+            self.mud.DoAction( "reloadlogicscript", mode, "0", "0", "0", parms[1] )
             return
 
 

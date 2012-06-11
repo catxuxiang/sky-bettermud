@@ -2,13 +2,14 @@ from data.commands.PythonCommand import Command
 from accessors.CharacterAccessor import character
 
 
+
 class north( Command ):
     name = "north"
     usage = "\"north\""
     description = "Attempts to move north"
     def Run( self, args ):
         c = character( self.me )
-        self.mud.DoAction( "command", c.ID(), 0, 0, 0, "/go north" )
+        self.mud.DoAction( "command", c.GetId(), "0", "0", "0", "/go north" )
 
 class east( Command ):
     name = "east"
@@ -16,7 +17,7 @@ class east( Command ):
     description = "Attempts to move east"
     def Run( self, args ):
         c = character( self.me )
-        self.mud.DoAction( "command", c.ID(), 0, 0, 0, "/go east" )
+        self.mud.DoAction( "command", c.GetId(), "0", "0", "0", "/go east" )
 
 class south( Command ):
     name = "south"
@@ -24,7 +25,7 @@ class south( Command ):
     description = "Attempts to move south"
     def Run( self, args ):
         c = character( self.me )
-        self.mud.DoAction( "command", c.ID(), 0, 0, 0, "/go south" )
+        self.mud.DoAction( "command", c.GetId(), "0", "0", "0", "/go south" )
 
 class west( Command ):
     name = "west"
@@ -32,7 +33,7 @@ class west( Command ):
     description = "Attempts to move west"
     def Run( self, args ):
         c = character( self.me )
-        self.mud.DoAction( "command", c.ID(), 0, 0, 0, "/go west" )
+        self.mud.DoAction( "command", c.GetId(), "0", "0", "0", "/go west" )
 
 class northeast( Command ):
     name = "northeast"
@@ -40,7 +41,7 @@ class northeast( Command ):
     description = "Attempts to move northeast"
     def Run( self, args ):
         c = character( self.me )
-        self.mud.DoAction( "command", c.ID(), 0, 0, 0, "/go northeast" )
+        self.mud.DoAction( "command", c.GetId(), "0", "0", "0", "/go northeast" )
 
 class northwest( Command ):
     name = "northwest"
@@ -48,7 +49,7 @@ class northwest( Command ):
     description = "Attempts to move northwest"
     def Run( self, args ):
         c = character( self.me )
-        self.mud.DoAction( "command", c.ID(), 0, 0, 0, "/go northwest" )
+        self.mud.DoAction( "command", c.GetId(), "0", "0", "0", "/go northwest" )
 
 class southeast( Command ):
     name = "southeast"
@@ -56,7 +57,7 @@ class southeast( Command ):
     description = "Attempts to move southeast"
     def Run( self, args ):
         c = character( self.me )
-        self.mud.DoAction( "command", c.ID(), 0, 0, 0, "/go southeast" )
+        self.mud.DoAction( "command", c.GetId(), "0", "0", "0", "/go southeast" )
 
 class southwest( Command ):
     name = "southwest"
@@ -64,7 +65,7 @@ class southwest( Command ):
     description = "Attempts to move southwest"
     def Run( self, args ):
         c = character( self.me )
-        self.mud.DoAction( "command", c.ID(), 0, 0, 0, "/go southwest" )
+        self.mud.DoAction( "command", c.GetId(), "0", "0", "0", "/go southwest" )
 
 class up( Command ):
     name = "up"
@@ -72,7 +73,7 @@ class up( Command ):
     description = "Attempts to move up"
     def Run( self, args ):
         c = character( self.me )
-        self.mud.DoAction( "command", c.ID(), 0, 0, 0, "/go above" )
+        self.mud.DoAction( "command", c.GetId(), "0", "0", "0", "/go above" )
 
 class down( Command ):
     name = "down"
@@ -80,7 +81,7 @@ class down( Command ):
     description = "Attempts to move down"
     def Run( self, args ):
         c = character( self.me )
-        self.mud.DoAction( "command", c.ID(), 0, 0, 0, "/go below" )
+        self.mud.DoAction( "command", c.GetId(), "0", "0", "0", "/go below" )
 
 class ne( northeast ):
     name = "ne"

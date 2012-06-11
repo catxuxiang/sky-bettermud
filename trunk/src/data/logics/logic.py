@@ -1,7 +1,7 @@
-import data.bettermudscript
+from data.bettermudscript import bettermudscript
 
-class logic( data.bettermudscript.bettermudscript ):
-    def Attribute( self, attr ):
+class logic( bettermudscript ):
+    def GetAttribute( self, attr ):
         return 0
 
     def Execute( self, action, arg1, arg2, arg3, arg4, data ):
