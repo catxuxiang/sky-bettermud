@@ -41,12 +41,6 @@ class ItemTemplate(Entity, DataEntity):
         for i in logics:
             self.m_logics.append(i)
     
-    def GetName(self):
-        if self.m_isquantity:
-            return self.m_name.replace("<#>", str(self.m_quantity))
-        else:
-            return self.m_name
-    
 class Item(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId):
     def __init__(self):
         LogicEntity.__init__(self)
@@ -57,6 +51,12 @@ class Item(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId):
         
         self.m_isquantity = False
         self.m_quantity = 1
+        
+    def GetName(self):
+        if self.m_isquantity:
+            return self.m_name.replace("<#>", str(self.m_quantity))
+        else:
+            return self.m_name        
         
     def IsQuantity(self):
         return self.m_isquantity

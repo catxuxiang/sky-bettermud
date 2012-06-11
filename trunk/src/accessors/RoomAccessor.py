@@ -55,17 +55,40 @@ class room:
     def Items(self):
         return self.m_room.Items()
     
+    def BeginItem(self):
+        self.m_itemIter = 0
+        
+    def CurrentItem(self):
+        if self.m_itemIter < len(self.m_room.m_items) and self.m_itemIter >= 0:
+            return self.m_room.m_items[self.m_itemIter]
+        else:
+            return None
+        
+    def NextItem(self):
+        self.m_itemIter += 1
+        
+    def IsValidItem(self):      
+        if self.m_itemIter < len(self.m_room.m_items) and self.m_itemIter >= 0:
+            return True
+        else:
+            return False
+        
     def SeekItem(self, p_name):
-        p_name = p_name.lower().strip()
-        for id1 in self.m_room.m_items:
-            i = ItemDB.Get(id1)
-            if i.GetName().lower() == p_name:
-                return id1
-        for id1 in self.m_room.m_items:
-            i = ItemDB.Get(id1)
-            if i.GetName().lower().find(p_name) == 0:
-                return id1
-        return "0"
+        index = 0
+        for i in self.m_room.m_items:
+            if ItemDB.Get(i).GetName().lower() == p_name.lower().strip():
+                self.m_itemIter = index
+                return
+            index += 1
+            
+        index = 0    
+        for i in self.m_room.m_items:
+            if ItemDB.Get(i).GetName().lower().find(p_name.lower().strip()) == 0:
+                self.m_itemIter = index
+                return
+            index += 1    
+            
+        self.m_itemIter = -1  
     
     def AddCharacter(self, p_id):
         self.m_room.AddCharacter(p_id)
@@ -76,17 +99,40 @@ class room:
     def Characters(self):
         return self.m_room.Characters()
     
+    def BeginCharacter(self):
+        self.m_characterIter = 0
+        
+    def CurrentCharacter(self):
+        if self.m_characterIter < len(self.m_room.m_characters) and self.m_characterIter >= 0:
+            return self.m_room.m_characters[self.m_characterIter]
+        else:
+            return None
+        
+    def NextCharacter(self):
+        self.m_characterIter += 1
+        
+    def IsValidCharacter(self):      
+        if self.m_characterIter < len(self.m_room.m_characters) and self.m_characterIter >= 0:
+            return True
+        else:
+            return False
+        
     def SeekCharacter(self, p_name):
-        p_name = p_name.lower().strip()
-        for id1 in self.m_room.m_characters:
-            i = CharacterDB.Get(id1)
-            if i.GetName().lower() == p_name:
-                return id1
-        for id1 in self.m_room.m_characters:
-            i = CharacterDB.Get(id1)
-            if i.GetName().lower().find(p_name) == 0:
-                return id1
-        return "0"
+        index = 0
+        for i in self.m_room.m_characters:
+            if CharacterDB.Get(i).GetName().lower() == p_name.lower().strip():
+                self.m_characterIter = index
+                return
+            index += 1
+        
+        index = 0    
+        for i in self.m_room.m_characters:
+            if CharacterDB.Get(i).GetName().lower().find(p_name.lower().strip()) == 0:
+                self.m_characterIter = index
+                return    
+            index += 1
+            
+        self.m_characterIter = -1  
     
     def AddPortal(self, p_id):
         self.m_room.AddPortal(p_id)
@@ -97,17 +143,42 @@ class room:
     def Portals(self):
         return self.m_room.Portals()
     
+    def BeginPortal(self):
+        self.m_portalIter = 0
+        
+    def CurrentPortal(self):
+        if self.m_portalIter < len(self.m_room.m_portals) and self.m_portalIter >= 0:
+            return self.m_room.m_portals[self.m_portalIter]
+        else:
+            return None
+        
+    def NextPortal(self):
+        self.m_portalIter += 1
+        
+    def IsValidPortal(self):      
+        if self.m_portalIter < len(self.m_room.m_portals) and self.m_portalIter >= 0:
+            return True
+        else:
+            return False
+        
     def SeekPortal(self, p_name):
-        p_name = p_name.lower().strip()
-        for id1 in self.m_room.m_portals:
-            i = PortalDB.Get(id1)
-            if i.GetName().lower() == p_name:
-                return id1
-        for id1 in self.m_room.m_portals:
-            i = PortalDB.Get(id1)
-            if i.GetName().lower().find(p_name) == 0:
-                return id1
-        return "0"
+        index = 0
+        for i in self.m_room.m_portals:
+            for j in PortalDB.Get(i).m_portals:
+                if j.directionname.lower() == p_name.lower().strip():
+                    self.m_portalIter = index
+                return
+            index += 1
+        
+        index = 0    
+        for i in self.m_room.m_portals:
+            for j in PortalDB.Get(i).m_portals:
+                if j.directionname.lower().find(p_name.lower().strip()) == 0:
+                    self.m_portalIter = index
+                return    
+            index += 1
+            
+        self.m_portalIter = -1 
     
     def AddLogic(self, p_logic):
         return self.m_room.AddLogic(p_logic)

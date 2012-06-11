@@ -508,7 +508,7 @@ class Game:
         r = room(c.GetRoom())
         reg = region(r.GetRegion())
         
-        if i.GetRoom().GetId() != c.GetId() or i.GetRegion().GetId() != "0":
+        if i.GetRoom() != c.GetId() or i.GetRegion() != "0":
             raise Exception( \
             "Character " + c.GetName() + " tried dropping item " + i.GetName() + \
             " but he does not own it.")

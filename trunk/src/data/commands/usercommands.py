@@ -28,19 +28,19 @@ class get( Command ):
         r = room( me.GetRoom() )
 
         quantity = 0
-        item = args
+        item1 = args
 
         if args[0] >= "0" and args[0] <= "9":
             # first letter is a digit, so get quantity
             split = args.split( None, 1 )
             try:
                 quantity = int( split[0] )
-                item = split[1]
+                item1 = split[1]
             except:
                 # do nothing
                 pass
 
-        i = item( FindTarget( r.SeekItem, r.IsValidItem, r.CurrentItem, item ) )
+        i = item( FindTarget( r.SeekItem, r.IsValidItem, r.CurrentItem, item1 ) )
         if i.IsQuantity() and quantity == 0:
             quantity = i.GetQuantity()
 
@@ -58,19 +58,19 @@ class drop( Command ):
         me = character( self.me )
 
         quantity = 0
-        item = args
+        item1 = args
 
         if args[0] >= "0" and args[0] <= "9":
             # first letter is a digit, so get quantity
             split = args.split( None, 1 )
             try:
                 quantity = int( split[0] )
-                item = split[1]
+                item1 = split[1]
             except:
                 # do nothing
                 pass
 
-        i = item( FindTarget( me.SeekItem, me.IsValidItem, me.CurrentItem, item ) )
+        i = item( FindTarget( me.SeekItem, me.IsValidItem, me.CurrentItem, item1 ) )
 
         # if user didn't specify the quantity of a quantity item,
         # just get the entire amount.

@@ -18,13 +18,13 @@ class PythonCommand(Command):
         self.m_script.Call("Execute", p_parameters)
         
     def GetName(self):
-        return self.m_script.Call("Name")
+        return self.m_script.Call("GetName")
     
     def GetUsage(self):
-        return self.m_script.Call("Usage")
+        return self.m_script.Call("GetUsage")
     
     def GetDescription(self):
-        return self.m_script.Call("Description")
+        return self.m_script.Call("GetDescription")
     
     def Load(self, sr, prefix):
         self.m_script.Load(sr, prefix)

@@ -4,6 +4,7 @@ Created on 2012-5-31
 @author: Sky
 '''
 from Db.AccountDatabase import AccountDB
+from Db.CharacterDatabase import CharacterDB
 
 class account:
     def __init__(self, p_data):
@@ -44,6 +45,41 @@ class account:
         
     def Characters(self):
         return self.m_account.Characters()
+    
+    def BeginCharacter(self):
+        self.m_characterIter = 0
+        
+    def CurrentCharacter(self):
+        if self.m_characterIter < len(self.m_account.m_characters) and self.m_characterIter >= 0:
+            return self.m_account.m_characters[self.m_characterIter]
+        else:
+            return None
+        
+    def NextCharacter(self):
+        self.m_characterIter += 1
+        
+    def IsValidCharacter(self):      
+        if self.m_characterIter < len(self.m_account.m_characters) and self.m_characterIter >= 0:
+            return True
+        else:
+            return False
+        
+    def SeekCharacter(self, p_name):
+        index = 0
+        for i in self.m_account.m_characters:
+            if CharacterDB.Get(i).GetName().lower() == p_name.lower().strip():
+                self.m_characterIter = index
+                return
+            index += 1
+        
+        index = 0    
+        for i in self.m_account.m_characters:
+            if CharacterDB.Get(i).GetName().lower().find(p_name.lower().strip()) == 0:
+                self.m_characterIter = index
+                return
+            index += 1    
+            
+        self.m_characterIter = -1  
     
     def GetPassword(self):
         return self.m_account.GetPassword()
