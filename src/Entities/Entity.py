@@ -74,6 +74,9 @@ class HasCharacters:
         self.m_characters = []
         
     def AddCharacter(self, p_character):
+        for i in self.m_characters:
+            if i == p_character:
+                return
         self.m_characters.append(p_character)
         
     def DelCharacter(self, p_character):
@@ -93,6 +96,9 @@ class HasItems:
         self.m_items = []
         
     def AddItem(self, p_item):
+        for i in self.m_items:
+            if i == p_item:
+                return        
         self.m_items.append(p_item)
         
     def DelItem(self, p_item):
@@ -112,6 +118,9 @@ class HasRooms:
         self.m_rooms = []
         
     def AddRoom(self, p_room):
+        for i in self.m_rooms:
+            if i == p_room:
+                return          
         self.m_rooms.append(p_room)
         
     def DelRoom(self, p_room):
@@ -131,6 +140,9 @@ class HasPortals:
         self.m_portals = []
         
     def AddPortal(self, p_portal):
+        for i in self.m_portals:
+            if i == p_portal:
+                return            
         self.m_portals.append(p_portal)
         
     def DelPortal(self, p_portal):

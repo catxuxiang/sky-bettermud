@@ -102,17 +102,40 @@ class character:
     def Items(self):
         return self.m_character.m_items
 
+    def BeginItem(self):
+        self.m_itemIter = 0
+        
+    def CurrentItem(self):
+        if self.m_itemIter < len(self.m_character.m_items) and self.m_itemIter >= 0:
+            return self.m_character.m_items[self.m_itemIter]
+        else:
+            return None
+        
+    def NextItem(self):
+        self.m_itemIter += 1
+        
+    def IsValidItem(self):      
+        if self.m_itemIter < len(self.m_character.m_items) and self.m_itemIter >= 0:
+            return True
+        else:
+            return False
+        
     def SeekItem(self, p_name):
-        p_name = p_name.lower().strip()
-        for id1 in self.m_character.m_items:
-            i = ItemDB.Get(id1)
-            if i.GetName().lower() == p_name:
-                return id1
-        for id1 in self.m_character.m_items:
-            i = ItemDB.Get(id1)
-            if i.GetName().lower().find(p_name) == 0:
-                return id1
-        return "0"
+        index = 0
+        for i in self.m_character.m_items:
+            if ItemDB.Get(i).GetName().lower() == p_name.lower().strip():
+                self.m_itemIter = index
+                return
+            index += 1
+        
+        index = 0    
+        for i in self.m_character.m_items:
+            if ItemDB.Get(i).GetName().lower().find(p_name.lower().strip()) == 0:
+                self.m_itemIter = index
+                return    
+            index += 1
+            
+        self.m_itemIter = -1  
     
     def AddLogic(self, p_logic):
         return self.m_character.AddLogic(p_logic)

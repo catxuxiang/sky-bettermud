@@ -50,9 +50,6 @@ class GameWrap:
     def Characters(self):
         return CharacterDB.Size()
     
-    def CharacterTemplates(self):
-        return CharacterDB.SizeTemplates()
-    
     def Items(self):
         return ItemDB.Size()
     

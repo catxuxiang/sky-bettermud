@@ -27,7 +27,7 @@ class TelnetGame(ConnectionHandler):
         self.m_character.AddExistingLogic(TelnetReporter(self.m_character.GetId(), self.m_connection))
         
         #show the news
-        g_game.DoAction("command", self.m_character.GetId(), "0", "0", "0", "/news")
+        #g_game.DoAction("command", self.m_character.GetId(), "0", "0", "0", "/news")
         
         #log in the player
         g_game.DoAction("enterrealm", self.m_character.GetId())

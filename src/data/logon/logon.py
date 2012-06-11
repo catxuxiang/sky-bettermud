@@ -1,4 +1,5 @@
-import BetterMUD
+from accessors.CharacterAccessor import character
+from accessors.AccountAccessor import account
 
 def listchars():
     s =  "<#FFFFFF>--------------------------------------------------------------------------------\r\n"
@@ -18,8 +19,8 @@ def gettemplateid( option ):
 
 
 def setup( id ):
-    c = BetterMUD.character( id )
-    a = BetterMUD.account( c.GetAccount() )
+    c = character( id )
+    a = account( c.GetAccount() )
     l = a.AccessLevel();
 
 
