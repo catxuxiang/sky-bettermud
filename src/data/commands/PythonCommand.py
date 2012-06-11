@@ -1,10 +1,6 @@
-'''
-Created on 2012-6-9
-
-@author: Sky
-'''
 from data.bettermudscript import bettermudscript
 from accessors.CharacterAccessor import character
+
 class UsageError(Exception):
     pass
 
@@ -21,14 +17,14 @@ def FindTarget( seekf, validf, getf, name ):
     return getf()
 
 
-class Command(bettermudscript):
+class Command( bettermudscript ):
 
     # Usage
-    def Usage( self ):
+    def GetUsage( self ):
         return self.usage
 
     # description
-    def Description( self ):
+    def GetDescription( self ):
         return self.description
 
     # the standard call method.
@@ -37,7 +33,11 @@ class Command(bettermudscript):
             self.Run( args )
         except UsageError:
             me = character( self.me )
-            me.DoAction( "error", 0, 0, 0, 0, "Usage: " + self.Usage() )
+            me.DoAction( "error", "0", "0", "0", "0", "Usage: " + self.GetUsage() )
         except TargetError as e:
             me = character( self.me )
-            me.DoAction( "error", 0, 0, 0, 0, "Cannot find: " + e.value )  
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot find: " + e.value )
+
+
+
+            

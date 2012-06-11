@@ -1,13 +1,13 @@
-import random
-import data.logics.logic
 from accessors.CharacterAccessor import character
-from accessors.RoomAccessor import room
 from accessors.ItemAccessor import item, itemtemplate
+from data.logics.logic import logic
+from accessors.RoomAccessor import room
 from accessors.RegionAccessor import region
+import random
 
 
 
-class combat( data.logics.logic.logic ):
+class combat( logic ):
 
     def ScriptInit( self ):
         self.attackedlist = []
@@ -20,8 +20,8 @@ class combat( data.logics.logic.logic ):
             return
         t = character( self.target )
         me.KillHook( "do", "attack" )
-        self.mud.AddActionAbsolute( 0, "vision", me.Room(), 0, 0, 0, me.Name() + " stops attacking " + t.Name() + "!!" )
-        t.DoAction( "do", 0, 0, self.me, 0, "brokeattack" )
+        self.mud.AddActionAbsolute( 0, "vision", me.GetRoom(), "0", "0", "0", me.GetName() + " stops attacking " + t.GetName() + "!!" )
+        t.DoAction( "do", "0", "0", self.me, "0", "brokeattack" )
         self.target = 0
 
 
@@ -30,13 +30,13 @@ class combat( data.logics.logic.logic ):
 
 
         if action == "modifyattribute" and data == "experience":
-            me.DoAction( "announce", 0, 0, 0, 0, "<#00FFFF>You gain " + str( arg4 ) + " experience!" )
+            me.DoAction( "announce", "0", "0", "0", "0", "<#00FFFF>You gain " + str( arg4 ) + " experience!" )
             return
 
         # check for death
         if action == "modifyattribute" and data == "hitpoints":
             if arg3 <= 0:
-                me.DoAction( "do", 0, 0, 0, 0, "died" )
+                me.DoAction( "do", "0", "0", "0", "0", "died" )
             return
 
         # you killed someone... celebrate!
@@ -46,7 +46,7 @@ class combat( data.logics.logic.logic ):
 
         if action == "do" and data == "died":
             self.Break( me )
-            self.mud.AddActionAbsolute( 0, "vision", me.Room(), 0, 0, 0, me.Name() + " dies!!!" )
+            self.mud.AddActionAbsolute( 0, "vision", me.GetRoom(), "0", "0", "0", me.GetName() + " dies!!!" )
 
             # calculate how much experience to give to everyone attacking you
             experience = me.GetAttribute( "giveexperience" )
@@ -57,8 +57,8 @@ class combat( data.logics.logic.logic ):
 
             for x in self.attackedlist[:]:
                 c = character( x )
-                c.DoAction( "do", 0, 0, self.me, 0, "killed" )
-                self.mud.DoAction( "modifyattribute", 0, x, c.GetAttribute( "experience" ) + experience, experience, "experience" )
+                c.DoAction( "do", "0", "0", self.me, "0", "killed" )
+                self.mud.DoAction( "modifyattribute", "0", x, c.GetAttribute( "experience" ) + experience, experience, "experience" )
 
             # clear the list
             self.attackedlist = []
@@ -66,28 +66,28 @@ class combat( data.logics.logic.logic ):
             # go through all his items and force them to drop
             me.BeginItem()
             while me.IsValidItem():
-                self.mud.DoAction( "dropitem", me.ID(), me.CurrentItem(), 0, 0, "" )
+                self.mud.DoAction( "dropitem", me.GetId(), me.CurrentItem(), "0", "0", "" )
                 me.NextItem()
 
             # now figure out how to kill the character
             if not me.IsPlayer():
                 # just destroy non-players
-                self.mud.AddActionAbsolute( 0, "destroycharacter", self.me, 0, 0, 0, "" )
+                self.mud.AddActionAbsolute( 0, "destroycharacter", self.me, "0", "0", "0", "" )
             else:
                 # give the player some hitpoints back
                 me.SetAttribute( "hitpoints", (me.GetAttribute( "maxhitpoints" ) / 10) * 7 )
 
                 # now spawn the player somewhere, checking the current room, current region, current character,
                 # and finally giving up and sending the player to room 1.
-                r = room( me.Room() )
-                if r.DoAction( "do", me.ID(), 0, 0, 0, "deathtransport" ):
+                r = room( me.GetRoom() )
+                if r.DoAction( "do", me.GetId(), "0", "0", "0", "deathtransport" ):
                     return
-                r = region( me.Region() )
-                if r.DoAction( "do", me.ID(), 0, 0, 0, "deathtransport" ):
+                r = region( me.GetRegion() )
+                if r.DoAction( "do", me.GetId(), "0", "0", "0", "deathtransport" ):
                     return
-                if me.DoAction( "do", me.ID(), 0, 0, 0, "deathtransport" ):
+                if me.DoAction( "do", me.GetId(), "0", "0", "0", "deathtransport" ):
                     return
-                self.mud.DoAction( "forcetransport", me.ID(), 1, 0, 0, "" )
+                self.mud.DoAction( "forcetransport", me.GetId(), "1", "0", "0", "" )
             return
 
 
@@ -126,15 +126,15 @@ class combat( data.logics.logic.logic ):
             # clear the old target if attacking someone else
             if self.target != 0:
                 t = character( self.target )
-                t.DoAction( "do", 0, 0, self.me, 0, "brokeattack" )
+                t.DoAction( "do", "0", "0", self.me, "0", "brokeattack" )
             else:
-                self.mud.AddActionRelative( 0, "do", 0, self.me, 0, 0, "attack" )
+                self.mud.AddActionRelative( 0, "do", "0", self.me, "0", "0", "attack" )
 
             # set the new target and tell him he's been attacked
             self.target = arg3
             t = character( arg3 )
-            t.DoAction( "do", 0, 0, self.me, 0, "attacked" )
-            self.mud.AddActionAbsolute( 0, "vision", me.Room(), 0, 0, 0, me.Name() + " begins attacking " + t.Name() + "!!" )
+            t.DoAction( "do", "0", "0", self.me, "0", "attacked" )
+            self.mud.AddActionAbsolute( 0, "vision", me.GetRoom(), "0", "0", "0", me.GetName() + " begins attacking " + t.GetName() + "!!" )
             return
 
 
@@ -155,34 +155,34 @@ class combat( data.logics.logic.logic ):
             target = character( self.target )
 
             # set another attack round
-            self.mud.AddActionRelative( self.attacktime, "do", 0, self.me, 0, 0, "attack" )
+            self.mud.AddActionRelative( self.attacktime, "do", "0", self.me, "0", "0", "attack" )
 
             # get the weapon
-            if me.GetAttribute( "weapon" ) == 0:
+            if me.GetAttribute( "weapon" ) == "0":
                 weapon = itemtemplate( me.GetAttribute( "defaultweapon" ) )
             else:
                 weapon = item( me.GetAttribute( "weapon" ) )
 
             # calculate the accuracy
             accuracy = weapon.GetAttribute( "accuracy" )
-            accuracy += target.DoAction( "query", me.ID(), target.ID(), 0, 0, "getaccuracydelta" )
-            accuracy += me.DoAction( "query", me.ID(), target.ID(), 0, 0, "getaccuracydelta" )
+            accuracy += target.DoAction( "query", me.GetId(), target.GetId(), "0", "0", "getaccuracydelta" )
+            accuracy += me.DoAction( "query", me.GetId(), target.GetId(), "0", "0", "getaccuracydelta" )
 
             # see if you hit him
             if accuracy <= random.randint( 0, 99 ):
-                self.mud.AddActionAbsolute( 0, "vision", me.Room(), 0, 0, 0, me.Name() + " swings at " + target.Name() + " with " + weapon.Name() + ", but misses!" )
+                self.mud.AddActionAbsolute( 0, "vision", me.GetRoom(), "0", "0", "0", me.GetName() + " swings at " + target.GetName() + " with " + weapon.GetName() + ", but misses!" )
                 return
 
             # calculate damage and hit
             damage = random.randint( weapon.GetAttribute( "mindamage" ), weapon.GetAttribute( "maxdamage" ) )
-            self.mud.DoAction( "vision", me.Room(), 0, 0, 0, "<#FF0000>" + me.Name() + " hits " + target.Name() + " with " + weapon.Name() + " for " + str( damage ) + " damage!" )
-            self.mud.DoAction( "modifyattribute", 0, target.ID(), target.GetAttribute( "hitpoints" ) - damage, damage, "hitpoints" )
+            self.mud.DoAction( "vision", me.GetRoom(), "0", "0", "0", "<#FF0000>" + me.GetName() + " hits " + target.GetName() + " with " + weapon.GetName() + " for " + str( damage ) + " damage!" )
+            self.mud.DoAction( "modifyattribute", "0", target.GetId(), target.GetAttribute( "hitpoints" ) - damage, damage, "hitpoints" )
 
 
 
 
 
-class evilmonster( data.logics.logic.logic ):
+class evilmonster( logic ):
 
     def Run( self, action, arg1, arg2, arg3, arg4, data ):
         me = character( self.me )
@@ -190,17 +190,17 @@ class evilmonster( data.logics.logic.logic ):
         # Attack anyone who enters the room
         if action == "enterroom":
             if arg1 != self.me:
-                self.mud.AddActionAbsolute( 0, "do", 0, me.ID(), arg1, 0, "initattack" )
+                self.mud.AddActionAbsolute( 0, "do", "0", me.GetId(), arg1, "0", "initattack" )
             return
 
 
         # you killed someone find another target!
         if action == "do" and data == "killed":
-            r = room( me.Room() )
+            r = room( me.GetRoom() )
             r.BeginCharacter()
             while r.IsValidCharacter():
                 if r.CurrentCharacter() != arg3:    # make sure you don't re-attack the character you just killed!
-                    self.mud.AddActionAbsolute( 0, "do", 0, me.ID(), r.CurrentCharacter(), 0, "initattack" )
+                    self.mud.AddActionAbsolute( 0, "do", "0", me.GetId(), r.CurrentCharacter(), "0", "initattack" )
                     return
                 r.NextCharacter()
             return

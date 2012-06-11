@@ -50,7 +50,7 @@ class CharacterDatabase(TemplateInstanceDatabase):
         for i in self.m_instances.values():
             if i.GetName().lower() == p_name.lower().strip():
                 return i.GetId()
-        return "0"
+        return None
     
     def FindPlayerPart(self, p_name):
         player = self.FindPlayerFull(p_name)
@@ -60,7 +60,7 @@ class CharacterDatabase(TemplateInstanceDatabase):
         for i in self.m_instances.values():
             if i.GetName().lower().find(p_name.lower().strip()) == 0:
                 return i.GetId()
-        return "0" 
+        return None
 
     def SaveDb(self, folder, m_characters):
         sr = TemplateInstanceDatabase.Sr

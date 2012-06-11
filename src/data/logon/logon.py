@@ -1,7 +1,6 @@
-from accessors.CharacterAccessor import character
-from accessors.AccountAccessor import account
+import BetterMUD
 
-def listchars(p_arg1 = "", p_arg2 = "0", p_arg3 = "0", p_arg4 = "0", p_arg5 = "0", p_arg6 = ""):
+def listchars():
     s =  "<#FFFFFF>--------------------------------------------------------------------------------\r\n"
     s += "<#00FF00> Please Choose a Race For Your Character:\r\n"
     s += "<#FFFFFF>--------------------------------------------------------------------------------\r\n"
@@ -12,16 +11,16 @@ def listchars(p_arg1 = "", p_arg2 = "0", p_arg3 = "0", p_arg4 = "0", p_arg5 = "0
     s += "<#FFFFFF> Enter Choice: <$reset>"
     return s
 
-def gettemplateid( option, p_arg2 = "0", p_arg3 = "0", p_arg4 = "0", p_arg5 = "0", p_arg6 = ""):
+def gettemplateid( option ):
     if option == 1: return 1
     if option == 2: return 2
     return 0
 
 
-def setup( id1, p_arg2 = "0", p_arg3 = "0", p_arg4 = "0", p_arg5 = "0", p_arg6 = ""):
-    c = character( id1 )
-    a = account( c.GetAccount() )
-    l = a.GetAccessLevel();
+def setup( id ):
+    c = BetterMUD.character( id )
+    a = BetterMUD.account( c.GetAccount() )
+    l = a.AccessLevel();
 
 
 
@@ -82,8 +81,8 @@ def setup( id1, p_arg2 = "0", p_arg3 = "0", p_arg4 = "0", p_arg5 = "0", p_arg6 =
         c.AddCommand( "savedatabase" )
 
 
-    c.SetRoom("1")
-    c.SetRegion("1")
+    c.SetRoom( 1 )
+    c.SetRegion( 1 )
 
 
 

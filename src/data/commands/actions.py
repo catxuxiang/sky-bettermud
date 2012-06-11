@@ -1,7 +1,6 @@
+from data.commands.PythonCommand import Command, UsageError
 from accessors.CharacterAccessor import character
 from accessors.RoomAccessor import room
-from data.commands.PythonCommand import Command, UsageError
-
 
 class action( Command ):
     name = "action"
@@ -11,7 +10,7 @@ class action( Command ):
     def Run( self, args ):
         if not args: raise UsageError
         c = character( self.me )
-        self.mud.AddActionAbsolute( 0, "announce", 0, 0, 0, 0, "<#FFFF00>" + c.Name() + " " + args )
+        self.mud.AddActionAbsolute( 0, "announce", "0", "0", "0", "0", "<#FFFF00>" + c.GetName() + " " + args )
 
 
 class pies( Command ):
@@ -28,13 +27,13 @@ class pies( Command ):
         else:
             r.SeekCharacter( args )
             if not r.IsValidCharacter():
-                me.DoAction( "error", 0, 0, 0, 0, "Cannot find character: " + args )
+                me.DoAction( "error", "0", "0", "0", "0", "Cannot find character: " + args )
                 return
             id1 = r.CurrentCharacter()
             c = character( id1 )
             name = c.GetName()
 
-        self.mud.AddActionAbsolute( 0, "vision", r.ID(), 0, 0, 0, "<#00FF00>OMG!!! " + me.GetName() + " just threw a huge <#FFFF00>CUSTARD PIE<#00FF00> at " + name + "!!!!" )
+        self.mud.AddActionAbsolute( 0, "vision", r.GetId(), "0", "0", "0", "<#00FF00>OMG!!! " + me.GetName() + " just threw a huge <#FFFF00>CUSTARD PIE<#00FF00> at " + name + "!!!!" )
 
 
 

@@ -1,5 +1,5 @@
-import data.logics.characters.currency
+from data.logics.characters.currency import merchant
 
-class bettertonmagicianshop( data.logics.characters.currency.merchant ):
+class bettertonmagicianshop( merchant ):
     def ScriptInit( self ):
         self.iteminventory = [ 54, 55 ]
