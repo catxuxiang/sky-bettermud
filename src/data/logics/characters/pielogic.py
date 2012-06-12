@@ -15,8 +15,8 @@ class pies( logic ):
 class glarepie( logic ):
     def Run( self, action, arg1, arg2, arg3, arg4, data ):
         if action == "getitem":
-            item = item( arg2 )
-            if item.GetTemplateId() == "2":
+            item1 = item( arg2 )
+            if item1.GetTemplateId() == "2":
                 self.mud.AddActionAbsolute( 0, "attemptsay", self.me, "0", "0", "0", "Hey!!!! Thos-a Pies aren't-a FREE!" )
 
         return 0
