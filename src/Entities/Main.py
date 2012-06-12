@@ -19,6 +19,7 @@ telnetconnectionmanager = ConnectionManager(128, 60, 65536)
 
 telnetlistener.SetConnectionManager(telnetconnectionmanager)
 telnetlistener.AddPort(5098)
+telnetlistener.AddPort(5099)
 
 g_game.LoadAll()
 
