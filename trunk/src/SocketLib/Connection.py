@@ -6,6 +6,8 @@ Created on 2012-5-2
 from SocketLib.SocketLibSocket import DataSocket
 from BasicLib.BasicLibTime import *
 from network.BetterTelnet import BetterTelnet
+import traceback
+import sys
 
 BUFFERSIZE = 1024
 TIMECHUNK = 16
@@ -42,13 +44,13 @@ class Connection(DataSocket):
             sent = DataSocket.Send(self, self.m_sendbuffer)
             self.m_sendbuffer = ""
 
-        if sent > 0:
-            self.m_lastSendTime = GetTimeS()
-            self.m_checksendtime = False
-        else:
-            if not self.m_checksendtime:
-                self.m_checksendtime = True
+            if sent > 0:
                 self.m_lastSendTime = GetTimeS()
+                self.m_checksendtime = False
+            else:
+                if not self.m_checksendtime:
+                    self.m_checksendtime = True
+                    self.m_lastSendTime = GetTimeS()
                 
     def Receive(self):
         byte = DataSocket.Receive(self, BUFFERSIZE)
