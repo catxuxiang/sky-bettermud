@@ -47,7 +47,7 @@ class CharacterDatabase(TemplateInstanceDatabase):
                 self.LoadEntityTemplate(ct, subfolder + ":" + id1)
                 
     def FindPlayerFull(self, p_name):
-        for i in self.m_instances.values():
+        for i in self.m_instances.m_container.values():
             if i.GetName().lower() == p_name.lower().strip():
                 return i.GetId()
         return None
@@ -57,7 +57,7 @@ class CharacterDatabase(TemplateInstanceDatabase):
         if player != "0":
             return player
         
-        for i in self.m_instances.values():
+        for i in self.m_instances.m_container.values():
             if i.GetName().lower().find(p_name.lower().strip()) == 0:
                 return i.GetId()
         return None

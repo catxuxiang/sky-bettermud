@@ -203,7 +203,7 @@ class arm( Command ):
 
 class disarm( Command ):
     name = "disarm"
-    usage = "\"disarm <item>\""
+    usage = "\"disarm weapon\""
     description = "Attempts to disarm an item"
 
     def Run( self, args ):
@@ -211,7 +211,9 @@ class disarm( Command ):
 
         me = character( self.me )
         if args == "weapon":
-            me.DoAction( "do", "0", "0", "1", "0", "disarm" )
+            me.DoAction( "do", "0", "0", 1, "0", "disarm" )
+        else:
+            raise UsageError
 
 
 

@@ -203,7 +203,7 @@ class Character(LogicEntity, DataEntity, HasRoom, HasRegion, HasTemplateId, HasI
         return self.m_quiet
     
     def IsPlayer(self):
-        return self.m_account != 0
+        return self.m_account != "0"
     
     def GetVerbose(self):
         return self.m_verbose

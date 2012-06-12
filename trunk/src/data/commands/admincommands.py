@@ -1,7 +1,7 @@
 from data.commands.PythonCommand import Command, UsageError
 from accessors.CharacterAccessor import character
 from accessors.RoomAccessor import room
-from accessors.ItemAccessor import itemtemplate
+from accessors.ItemAccessor import itemtemplate, item
 from accessors.CharacterAccessor import charactertemplate
 from accessors.RegionAccessor import region
 
@@ -190,19 +190,19 @@ class destroyitem( Command ):
         me.SeekItem( args )
 
         if me.IsValidItem():
-            item = me.CurrentItem()
+            item1 = me.CurrentItem()
         else:
-            room = room( me.GetRoom() )
-            room.SeekItem( args )
-            if room.IsValidItem():
-                item = room.CurrentItem()
+            room1 = room( me.GetRoom() )
+            room1.SeekItem( args )
+            if room1.IsValidItem():
+                item1 = room1.CurrentItem()
             else:
                 me.DoAction( "error", "0", "0", "0", "0", "Cannot find item: " + args )
                 return
 
-        i = item( item )
+        i = item( item1 )
         me.DoAction( "announce", "0", "0", "0", "0", "Destroying Item: " + i.GetName() )
-        self.mud.AddActionAbsolute( 0, "destroyitem", item, "0", "0", "0", "" )
+        self.mud.AddActionAbsolute( 0, "destroyitem", item1, "0", "0", "0", "" )
 
 
 class destroycharacter( Command ):
@@ -214,17 +214,17 @@ class destroycharacter( Command ):
         if not args: raise UsageError
 
         me = character( self.me )
-        room = room( me.GetRoom() )
-        room.SeekCharacter( args )
-        if room.IsValidCharacter():
-            character = room.CurrentCharacter()
+        room1 = room( me.GetRoom() )
+        room1.SeekCharacter( args )
+        if room1.IsValidCharacter():
+            character1 = room1.CurrentCharacter()
         else:
             me.DoAction( "error", "0", "0", "0", "0", "Cannot find character: " + args )
             return
 
-        c = character( character )
+        c = character( character1 )
         me.DoAction( "announce", "0", "0", "0", "0", "Destroying Character: " + c.GetName() )
-        self.mud.AddActionAbsolute( 0, "destroycharacter", character, "0", "0", "0", "" )
+        self.mud.AddActionAbsolute( 0, "destroycharacter", character1, "0", "0", "0", "" )
 
 
 class cleanup( Command ):
@@ -255,8 +255,8 @@ class savedatabase( Command ):
             return
         if parms[0] == "region":
             if len(parms) < 2: raise UsageError
-            region = region( parms[1] )
-            me.DoAction( "announce", "0", "0", "0", "0", "Beginning Region Database Save: " + region.GetName() )
+            region1 = region( parms[1] )
+            me.DoAction( "announce", "0", "0", "0", "0", "Beginning Region Database Save: " + region1.GetName() )
             self.mud.AddActionAbsolute( 0, "saveregion", parms[1], "0", "0", "0", "" )
             return
         if parms[0] == "players":

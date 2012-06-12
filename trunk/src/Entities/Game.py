@@ -538,7 +538,7 @@ class Game:
     
         newitemid = 0
         if i.IsQuantity() and p_quantity != i.GetQuantity():
-            newitemid = ItemDB.Generate(i.GetTemplateId())
+            newitemid = ItemDB.Generate(i.GetTemplateId(), Item())
             item(newitemid).SetQuantity(p_quantity)
             i.SetQuantity(i.GetQuantity() - p_quantity)
         else:
@@ -590,7 +590,7 @@ class Game:
     
         newitemid = 0
         if i.IsQuantity() and p_quantity != i.GetQuantity():
-            newitemid = ItemDB.Generate(i.GetTemplateId())
+            newitemid = ItemDB.Generate(i.GetTemplateId(), Item())
             item(newitemid).SetQuantity(p_quantity)
             i.SetQuantity(i.GetQuantity() - p_quantity)
         else:
@@ -608,7 +608,7 @@ class Game:
             self.DoJoinQuantities(CharacterDB.Get(r.GetId()), newitemid)
 
     def SpawnItem(self, p_itemtemplate, p_location, p_player, p_quantity):
-        newitem = ItemDB.Generate(p_itemtemplate)
+        newitem = ItemDB.Generate(p_itemtemplate, Item())
         i = item(newitem)
     
         if p_player == "0":
@@ -638,7 +638,7 @@ class Game:
             c.DoAction("spawnitem", newitem)
 
     def SpawnCharacter(self, p_chartemplate, p_location):
-        newchar = CharacterDB.Generate(p_chartemplate)
+        newchar = CharacterDB.Generate(p_chartemplate, Character())
         c = character(newchar)
         r = room(p_location)
         reg = region(r.GetRegion())
@@ -682,7 +682,7 @@ class Game:
         c.DoAction("destroycharacter", p_character)
     
         # force the items into the room
-        for data in c.m_items:
+        for data in c.m_character.m_items:
             i = item(data)
             r.AddItem(i.GetId())
             reg.AddItem(i.GetId())
@@ -821,10 +821,10 @@ class Game:
     
         self.LoadTimers()
     
-    def ReloadItemTemplates(self, sr, prefix):
+    def ReloadItemTemplates(self, prefix):
         ItemDB.LoadTemplates(sr, prefix)
     
-    def ReloadCharacterTemplates(self, sr, prefix):
+    def ReloadCharacterTemplates(self, prefix):
         CharacterDB.LoadTemplates(sr, prefix)
     
     def ReloadRegion(self, p_name):
