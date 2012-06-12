@@ -21,6 +21,28 @@ class PythonCallable:
     def Get(self):
         return self.m_module.Get()
     
+    def PrintErrorStack(self):
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print("*** print_tb:")
+        traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
+        print("*** print_exception:")
+        traceback.print_exception(exc_type, exc_value, exc_traceback,
+                                  limit=2, file=sys.stdout)
+        print("*** print_exc:")
+        traceback.print_exc()
+        print("*** format_exc, first and last line:")
+        formatted_lines = traceback.format_exc().splitlines()
+        print(formatted_lines[0])
+        print(formatted_lines[-1])
+        print("*** format_exception:")
+        print(repr(traceback.format_exception(exc_type, exc_value,
+                                              exc_traceback)))
+        print("*** extract_tb:")
+        print(repr(traceback.extract_tb(exc_traceback)))
+        print("*** format_tb:")
+        print(repr(traceback.format_tb(exc_traceback)))
+        print("*** tb_lineno:", exc_traceback.tb_lineno)
+    
     def Call(self, p_name, p_arg1 = "", p_arg2 = "0", p_arg3 = "0", p_arg4 = "0", p_arg5 = "0", p_arg6 = ""):
         method = getattr(self.m_module.m_object, p_name)
         num = len(inspect.getargspec(method).args)
@@ -42,30 +64,8 @@ class PythonCallable:
             elif  num == 6:
                 return method(p_arg1, p_arg2, p_arg3, p_arg4, p_arg5, p_arg6)
         except Exception:
-            exc_type, exc_value, exc_traceback = sys.exc_info()
-            print("*** print_tb:")
-            traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
-            print("*** print_exception:")
-            traceback.print_exception(exc_type, exc_value, exc_traceback,
-                                      limit=2, file=sys.stdout)
-            print("*** print_exc:")
-            traceback.print_exc()
-            print("*** format_exc, first and last line:")
-            formatted_lines = traceback.format_exc().splitlines()
-            print(formatted_lines[0])
-            print(formatted_lines[-1])
-            print("*** format_exception:")
-            print(repr(traceback.format_exception(exc_type, exc_value,
-                                                  exc_traceback)))
-            print("*** extract_tb:")
-            print(repr(traceback.extract_tb(exc_traceback)))
-            print("*** format_tb:")
-            print(repr(traceback.format_tb(exc_traceback)))
-            print("*** tb_lineno:", exc_traceback.tb_lineno)
+            self.PrintErrorStack()
 
-
-
-    
 class PythonModule(PythonCallable):
     def __init__(self):
         PythonCallable.__init__(self)
@@ -187,12 +187,16 @@ class PythonDatabase:
         self.m_modules.append(mod)
         
     def Reload(self, p_module, p_mode):
-        for i in self.m_modules:
-            if i.GetName() == p_module:
-                i.Reload(p_mode)
-                return
-        #if we got this far, then the module doesn't exist, so load it
-        self.LoadModule(p_module)
+        try:
+            for i in self.m_modules:
+                if i.GetName() == p_module:
+                    i.Reload(p_mode)
+                    return
+            #if we got this far, then the module doesn't exist, so load it
+            self.LoadModule(p_module)
+        except:
+            self.PrintErrorStack()
+
         
     def SpawnNew(self, p_str):
         for i in self.m_modules:

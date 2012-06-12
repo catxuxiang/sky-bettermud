@@ -126,7 +126,7 @@ class CPPCommandReloadScript(CPPCommand):
         
     def Execute(self, p_parameters):
         type1 = ParseWord(p_parameters, 0)
-        file = "data.commands." + ParseWord(p_parameters, 1)
+        file = "../data/commands/" + ParseWord(p_parameters, 1) + ".py"
         flag = ParseWord(p_parameters, 2)
         
         if flag == "keepall":
