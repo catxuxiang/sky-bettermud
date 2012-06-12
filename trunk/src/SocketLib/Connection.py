@@ -6,8 +6,6 @@ Created on 2012-5-2
 from SocketLib.SocketLibSocket import DataSocket
 from BasicLib.BasicLibTime import *
 from network.BetterTelnet import BetterTelnet
-import traceback
-import sys
 
 BUFFERSIZE = 1024
 TIMECHUNK = 16

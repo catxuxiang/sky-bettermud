@@ -15,6 +15,7 @@ from Db.LogicDatabase import LogicDB
 from Db.PortalDatabase import PortalDB
 from Db.AccountDatabase import AccountDatabase
 from Entities.Character import Character
+from Entities.Item import Item
 from BasicLib.BasicLibTime import Timer
 from BasicLib.Redis import sr
 from accessors.CharacterAccessor import character
@@ -209,7 +210,7 @@ class Game:
         
         full = p_command
         if full == "/":
-            full = c.LastCommand()
+            full = c.GetLastCommand()
         else:
             c.SetLastCommand(full)
             
@@ -479,7 +480,10 @@ class Game:
     
         newitemid = 0;
         if i.IsQuantity() and p_quantity != i.GetQuantity():
-            newitemid = ItemDB.Generate(i.GetTemplateId())
+            item1 = Item()
+            item1.m_isquantity = True
+            item1.m_quantity = p_quantity
+            newitemid = ItemDB.Generate(i.GetTemplateId(), item1)
             item(newitemid).SetQuantity(p_quantity)
             i.SetQuantity(i.GetQuantity() - p_quantity)
         else:
@@ -827,18 +831,19 @@ class Game:
         RegionDB.LoadRegion(p_name)
 
     def ReloadCommandScript(self, p_name, p_mode):
-        CommandDB.Reload("data.commands." + p_name, p_mode)
+        CommandDB.Reload("../data/commands/" + p_name + ".py", p_mode)
 
     def ReloadLogicScript(self, p_name, p_mode):
-        LogicDB.Reload("data.logics." + p_name, p_mode)
+        LogicDB.Reload("../data/logics/" + p_name + ".py", p_mode)
     
     def SaveTimers(self):
         sr.set("timers:GAMETIME", self.GetTime())
         sr.ltrim("timers:GAMETIME:REGISTRY", 2, 1)
         index = 0
         for i in self.m_timerregistry:
-            sr.rpush("timers:GAMETIME:REGISTRY", index)
-            i.Save(sr, "timers:GAMETIME:REGISTRY:" + index)
+            if i.valid:
+                sr.rpush("timers:GAMETIME:REGISTRY", index)
+                i.Save(sr, "timers:GAMETIME:REGISTRY:" + str(index))
             index += 1
     
     def LoadTimers(self):
@@ -888,17 +893,15 @@ class Game:
         index = 0
         while index < len(self.m_timerregistry):
             a = self.m_timerregistry[index]
-            if a.executiontime <= t and a.valid:
-                a.Unhook()
-                self.DoAction(a.actionevent)
+            if a.executiontime <= t:
+                if a.valid:
+                    a.Unhook()
+                    self.DoAction(a.actionevent)
                 del self.m_timerregistry[index]
             else:
                 index += 1
                 
     def AddTimedAction(self, p_action):
-        print(p_action.actionevent.actiontype)
-        print(p_action.actionevent.stringdata)
-        print(str(p_action.executiontime))
         self.m_timerregistry.append(p_action)
         p_action.Hook()
                 

@@ -1,11 +1,13 @@
 from data.logics.logic import logic
+from accessors.CharacterAccessor import character
+from accessors.ItemAccessor import item
 
 
 
 class spellscroll( logic ):
-    def DoRead( self, character, item, name ):
-        c = character( character )
-        i = item( item )
+    def DoRead( self, character1, item1, name ):
+        c = character( character1 )
+        i = item( item1 )
         if c.HasCommand( name ):
             c.DoAction( "error", "0", "0", "0", "0", "You already know this spell!" )
             return

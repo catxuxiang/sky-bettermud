@@ -78,7 +78,7 @@ class region:
         
         index = 0    
         for i in self.m_region.m_items:
-            if ItemDB.Get(i).GetName().lower().find(p_name.lower().strip()) == 0:
+            if ItemDB.Get(i).GetName().lower().find(p_name.lower().strip()) != -1:
                 self.m_itemIter = index
                 return    
             index += 1
