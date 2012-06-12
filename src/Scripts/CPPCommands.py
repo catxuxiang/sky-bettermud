@@ -125,6 +125,10 @@ class CPPCommandReloadScript(CPPCommand):
         CPPCommand.__init__(self, p_character, "reloadscript", "\"reloadscript <type> <file> <keepall|keepdata>\"", "Reloads a script")
         
     def Execute(self, p_parameters):
+        if len(p_parameters.strip().split(" ")) < 3:
+            self.m_character.DoAction("error", "0", "0", "0", "0", "Usage: " + self.GetUsage())
+            return
+                    
         type1 = ParseWord(p_parameters, 0)
         file = "../data/commands/" + ParseWord(p_parameters, 1) + ".py"
         flag = ParseWord(p_parameters, 2)

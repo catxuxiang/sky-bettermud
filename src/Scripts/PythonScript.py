@@ -30,6 +30,7 @@ class PythonCallable:
                                   limit=2, file=sys.stdout)
         print("*** print_exc:")
         traceback.print_exc()
+        '''
         print("*** format_exc, first and last line:")
         formatted_lines = traceback.format_exc().splitlines()
         print(formatted_lines[0])
@@ -42,6 +43,7 @@ class PythonCallable:
         print("*** format_tb:")
         print(repr(traceback.format_tb(exc_traceback)))
         print("*** tb_lineno:", exc_traceback.tb_lineno)
+        '''
     
     def Call(self, p_name, p_arg1 = "", p_arg2 = "0", p_arg3 = "0", p_arg4 = "0", p_arg5 = "0", p_arg6 = ""):
         method = getattr(self.m_module.m_object, p_name)
@@ -73,7 +75,7 @@ class PythonModule(PythonCallable):
         self.m_path = ""
         
     def GetName(self):
-        return self.m_module.GetName()
+        return self.m_path
     
     def Import(self, modulename):
         dirname = os.path.dirname(os.path.abspath(modulename))

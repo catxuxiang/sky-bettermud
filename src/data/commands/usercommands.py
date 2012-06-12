@@ -33,18 +33,13 @@ class get( Command ):
         if args[0] >= "0" and args[0] <= "9":
             # first letter is a digit, so get quantity
             split = args.split( None, 1 )
-            try:
-                quantity = int( split[0] )
-                item1 = split[1]
-            except:
-                # do nothing
-                pass
+            quantity = int( split[0] )
+            item1 = split[1]
 
         i = item( FindTarget( r.SeekItem, r.IsValidItem, r.CurrentItem, item1 ) )
+
         if i.IsQuantity() and quantity == 0:
             quantity = i.GetQuantity()
-        print(i.IsQuantity())
-        print(quantity)
 
         self.mud.DoAction( "attemptgetitem", me.GetId(), r.CurrentItem(), quantity, 0, "" )
 

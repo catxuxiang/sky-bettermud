@@ -44,8 +44,8 @@ class uberweight( Command ):
             return
 
         id1 = FindTarget( r.SeekItem, r.IsValidItem, r.CurrentItem, args )
-        item = item( id1 )
-        name = item.GetName()
+        item1 = item( id1 )
+        name = item1.GetName()
 
         # add 120 seconds; 2 minutes
         self.executiontime = time + 120000
