@@ -167,12 +167,16 @@ class inventory( Command ):
                 string += "<#00FF00>, <$reset>"
                 me.NextItem()
         string += "\r\n<#FFFFFF>--------------------------------------------------------------------------------\r\n"
+        string += "HP:" + str(me.GetAttribute( "hitpoints" )) + "\r\n<#FFFFFF>--------------------------------------------------------------------------------\r\n"
+        string += "EXP:" + str(me.GetAttribute( "experience" )) + "\r\n<#FFFFFF>--------------------------------------------------------------------------------\r\n"
         string += "<#FFFFFF> Weapon:       <$reset>";
         if me.GetAttribute( "weapon" ) == "0":
-            item1 = itemtemplate( me.GetAttribute( "defaultweapon" ) )
+            #item1 = itemtemplate( me.GetAttribute( "defaultweapon" ) )
+            string += "None\r\n"
         else:
             item1 = item( me.GetAttribute( "weapon" ) )
-        string += item1.GetName() + "\r\n"
+            string += item1.GetName() + "\r\n"
+        
         string += "<#FFFFFF> Total Weight: <$reset>" + str( me.GetAttribute( "encumbrance" ) ) + "\r\n"
         string += "<#FFFFFF> Max Weight:   <$reset>" + str( me.GetAttribute( "maxencumbrance" ) ) + "\r\n"
         string += "<#FFFFFF>--------------------------------------------------------------------------------\r\n"
@@ -287,6 +291,7 @@ class attack( Command ):
         t = FindTarget( r.SeekCharacter, r.IsValidCharacter, r.CurrentCharacter, args )
         target = character( t )
         if not target.DoAction( "query", me.GetId(), "0", "0", "0", "canattack" ):
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot attack " + target.GetName() + "!" )
             return
 
         me.DoAction( "do", "0", "0", t, "0", "initattack" )

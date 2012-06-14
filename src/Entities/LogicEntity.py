@@ -54,7 +54,7 @@ class LogicEntity(Entity):
             return self.m_logic.DoAction(Action(p_action, p_data1, p_data2, p_data3, p_data4, p_data))
         
     def GetLogicAttribute(self, p_logic, p_attr):
-        return self.m_logic.Attribute(p_logic, p_attr)
+        return self.m_logic.GetAttribute(p_logic, p_attr)
     
     def AddHook(self, p_hook):
         self.m_hooks.append(p_hook)

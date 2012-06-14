@@ -452,7 +452,7 @@ class Game:
         r = room(c.GetRoom())
         reg = region(r.GetRegion())
     
-        if i.GetRoom() != c.GetRoom() and i.GetRegion() == None:
+        if i.GetRoom() != c.GetRoom() and i.GetRegion() == "0":
             raise Exception( \
                 "Character " + c.GetName() + " tried picking up item " + i.GetName() + \
                 " but they are not in the same room.")
@@ -482,7 +482,6 @@ class Game:
         if i.IsQuantity() and p_quantity != i.GetQuantity():
             item1 = Item()
             item1.m_isquantity = True
-            item1.m_quantity = p_quantity
             newitemid = ItemDB.Generate(i.GetTemplateId(), item1)
             item(newitemid).SetQuantity(p_quantity)
             i.SetQuantity(i.GetQuantity() - p_quantity)

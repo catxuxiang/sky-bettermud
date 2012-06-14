@@ -7,9 +7,9 @@ def HasEnoughCurrency( character1, amount ):
     total = 0
     character1.BeginItem()
     while character1.IsValidItem():
-        item = item( character1.CurrentItem() )
-        if item.GetTemplateId() == "1":   # copper pieces
-            total = total + item.GetQuantity()
+        item1 = item( character1.CurrentItem() )
+        if item1.GetTemplateId() == "1":   # copper pieces
+            total = total + item1.GetQuantity()
         character1.NextItem()
 
     if total >= amount:
@@ -70,7 +70,7 @@ class merchant( logic ):
                 return
 
             t = itemtemplate( id1 )
-            if not HasEnoughCurrency( character1, t.GetAttribute( "value" ) ):
+            if not HasEnoughCurrency( character1, int(t.GetAttribute( "value" )) ):
                 character1.DoAction( "announce", "0", "0", "0", "0", "Sorry, you don't have enough money to buy " + t.GetName() + "!" )
                 return
 

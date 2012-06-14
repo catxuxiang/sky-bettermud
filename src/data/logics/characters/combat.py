@@ -49,7 +49,7 @@ class combat( logic ):
             self.mud.AddActionAbsolute( 0, "vision", me.GetRoom(), "0", "0", "0", me.GetName() + " dies!!!" )
 
             # calculate how much experience to give to everyone attacking you
-            experience = me.GetAttribute( "giveexperience" )
+            experience = int(me.GetAttribute( "giveexperience" ))
             if len( self.attackedlist ) > 0:
                 experience = experience / len( self.attackedlist )
 
@@ -58,7 +58,7 @@ class combat( logic ):
             for x in self.attackedlist[:]:
                 c = character( x )
                 c.DoAction( "do", "0", "0", self.me, "0", "killed" )
-                self.mud.DoAction( "modifyattribute", "0", x, c.GetAttribute( "experience" ) + experience, experience, "experience" )
+                self.mud.DoAction( "modifyattribute", "0", x, float(c.GetAttribute( "experience" )) + experience, experience, "experience" )
 
             # clear the list
             self.attackedlist = []
@@ -75,7 +75,7 @@ class combat( logic ):
                 self.mud.AddActionAbsolute( 0, "destroycharacter", self.me, "0", "0", "0", "" )
             else:
                 # give the player some hitpoints back
-                me.SetAttribute( "hitpoints", (me.GetAttribute( "maxhitpoints" ) / 10) * 7 )
+                me.SetAttribute( "hitpoints", str((int(me.GetAttribute( "maxhitpoints" )) / 10) * 7) )
 
                 # now spawn the player somewhere, checking the current room, current region, current character,
                 # and finally giving up and sending the player to room 1.
@@ -93,8 +93,8 @@ class combat( logic ):
 
         # reset hp if maxhp goes down below hp.
         if action == "modifyattribute" and data == "maxhitpoints":
-            if me.GetAttribute( "hitpoints" ) > me.GetAttribute( "maxhitpoints" ):
-                me.SetAttribute( "hitpoints", me.GetAttribute( "maxhitpoints" ) )
+            if int(me.GetAttribute( "hitpoints" )) > int(me.GetAttribute( "maxhitpoints" )):
+                me.SetAttribute( "hitpoints", str(me.GetAttribute( "maxhitpoints" )) )
             return
 
         # people with the combat module can be attacked
@@ -164,7 +164,7 @@ class combat( logic ):
                 weapon = item( me.GetAttribute( "weapon" ) )
 
             # calculate the accuracy
-            accuracy = weapon.GetAttribute( "accuracy" )
+            accuracy = int(weapon.GetAttribute( "accuracy" ))
             accuracy += target.DoAction( "query", me.GetId(), target.GetId(), "0", "0", "getaccuracydelta" )
             accuracy += me.DoAction( "query", me.GetId(), target.GetId(), "0", "0", "getaccuracydelta" )
 
@@ -174,9 +174,9 @@ class combat( logic ):
                 return
 
             # calculate damage and hit
-            damage = random.randint( weapon.GetAttribute( "mindamage" ), weapon.GetAttribute( "maxdamage" ) )
+            damage = random.randint( int(weapon.GetAttribute( "mindamage" )), int(weapon.GetAttribute( "maxdamage" )) )
             self.mud.DoAction( "vision", me.GetRoom(), "0", "0", "0", "<#FF0000>" + me.GetName() + " hits " + target.GetName() + " with " + weapon.GetName() + " for " + str( damage ) + " damage!" )
-            self.mud.DoAction( "modifyattribute", "0", target.GetId(), target.GetAttribute( "hitpoints" ) - damage, damage, "hitpoints" )
+            self.mud.DoAction( "modifyattribute", "0", target.GetId(), int(target.GetAttribute( "hitpoints" )) - damage, damage, "hitpoints" )
 
 
 

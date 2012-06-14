@@ -1,4 +1,4 @@
-from data.commands.PythonCommand import Command, UsageError
+from data.commands.PythonCommand import Command, UsageError, FindTarget
 from accessors.CharacterAccessor import character
 from accessors.RoomAccessor import room
 from accessors.ItemAccessor import itemtemplate, item
@@ -80,7 +80,7 @@ class emulate( Command ):
 
 class addplayerlogic( Command ):
     name = "addplayerlogic"
-    usage = "\"addplayerlogic <player> <logicname>\""
+    usage = "\"addplayerlogic <character> <logicname>\""
     description = "This adds a logic module to a player."
 
     def Run( self, args ):
@@ -88,11 +88,14 @@ class addplayerlogic( Command ):
         parms = args.split( None, 1 )
         if len(parms) < 2: raise UsageError
         me = character( self.me )
-        id1 = self.mud.FindPlayerPart( parms[0] )
-        if not id1:
-            me.DoAction( "error", "0", "0", "0", "0", "Cannot find player: " + parms[0] )
+        
+        r = room( me.GetRoom() )
+        c = character( FindTarget( r.SeekCharacter, r.IsValidCharacter, r.CurrentCharacter, parms[0] ) )        
+        #id1 = self.mud.FindPlayerPart( parms[0] )
+        if not c:
+            me.DoAction( "error", "0", "0", "0", "0", "Cannot find character: " + parms[0] )
             return
-        c = character( id1 )
+        #c = character( m )
         if not c.AddLogic( parms[1] ):
             me.DoAction( "error", "0", "0", "0", "0", "Could not add logic: " + parms[1] )
             return
